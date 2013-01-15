@@ -165,7 +165,7 @@ sub set_layout
 	}
 	
 	# Set default size
-	$self->SetSize(530,500);
+	$self->SetSize(545,520);
 	
 	# Make sure the window cannot be resized smaller
 	$self->SetMinSize($self->GetSize);
