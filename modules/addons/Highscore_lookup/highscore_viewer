@@ -1,0 +1,362 @@
+#!/usr/bin/perl -w
+
+# Be strict to avoid messy code
+use strict;
+
+# Make an array with all skillnames
+my @skillnames = ("Overall","Attack","Defence","Strength","Constitution","Ranged","Prayer","Magic","Cooking","Woodcutting","Fletching","Fishing","Firemaking","Crafting","Smithing","Mining","Herblore","Agility","Thieving","Slayer","Farming","Runecrafting","Hunter","Construction","Summoning","Dungeoneering");
+
+# The amount of skills in RuneScape
+my $skillcount = 25;
+
+# Use FindBin module to get script directory
+use FindBin;
+
+# Name of our xrc gui resource file
+my $xrc_gui_file = "windowframe.xrc";
+
+# Disable buffering
+$|=1;
+
+# Get script directory
+my $cwd = $FindBin::RealBin;
+# Get script filename
+my $scriptname = $FindBin::Script;
+# Detect the current OS
+my $OS = "$^O";
+
+# Make a variable for users homedir
+my $HOME;
+# If we are on windows
+if ($OS =~ /MSWin32/)
+{
+	# Get the environment variable for USERPROFILE
+	$HOME = $ENV{"USERPROFILE"};
+	# Replace all / with \
+	$HOME =~ s/\//\\/g;
+}
+# Else we are on UNIX
+else
+{
+	$HOME = $ENV{"HOME"};
+}
+
+#---------------------------------------- *** ----------------------------------------
+#---------------------------------------- *** ----------------------------------------
+#---------------------------------------- *** ----------------------------------------
+
+package wxTopLevelFrame;
+
+use Wx qw[:everything];
+use Wx::XRC;
+# Which events shall we include
+use Wx::Event qw(EVT_BUTTON EVT_TEXT_ENTER);
+
+use base qw(Wx::Frame Wx::ScrolledWindow);
+
+# Use LWP::Simple module to get website content (crossplatform)
+use LWP::Simple;
+
+
+sub new
+{
+	# Create a class
+	my $class = shift;
+	
+	# Assign class object to $self
+	my $self = $class->SUPER::new;
+	
+	# Initialize everything
+	$self->initialize;
+	
+	return $self;
+}
+
+sub initialize
+{
+	# Get pointers
+	my $self = shift;
+	
+	# Create mutators for widgets (enter the objectname for every object here)
+	$self->create_mutator
+	(
+		qw
+		(
+			xrc_resource
+		)
+	);
+	
+	load_xrc_gui($self);
+	
+	set_events($self);
+	
+	set_tooltips($self);
+	
+}
+
+sub load_xrc_gui
+{
+	# Get the pointers
+	my $self = shift;
+	
+	# Get the xrc file
+	my $xrc_file = "$cwd/$xrc_gui_file";
+	
+	# Initialize WX
+	Wx::InitAllImageHandlers();
+	
+	# Create xrc/xml resource
+	$self->xrc_resource = Wx::XmlResource->new;
+	# Initialize handlers
+	$self->xrc_resource->InitAllHandlers;
+	# Load the xrc file
+	$self->xrc_resource->Load($xrc_file);
+	
+	# Tell what window/frame to load
+	$self->xrc_resource->LoadFrame($self,undef,"mainwindow");
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+sub set_events
+{
+	# Get the pointers
+	my $self = shift;
+	
+	# Setup the events
+	# EVT_BUTTON($self, Wx::XmlResource::GetXRCID('objectname'), \&function);
+	EVT_BUTTON($self, Wx::XmlResource::GetXRCID('lookup'), \&lookup_player);
+	EVT_TEXT_ENTER($self, Wx::XmlResource::GetXRCID('name'), \&lookup_player);
+	
+	
+	# Do the layout
+	set_layout($self);
+	
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+sub set_layout
+{
+	# Get pointers
+	my $self = shift;
+	
+	# Find the widgets
+	# $self->objectname = $self->FindWindow('objectname');
+	
+	# Get the mainpanel
+	$self->{mainpanel} = $self->FindWindow('mainpanel');
+	# Make it scrollable
+	setScrollBars($self->{mainpanel});
+	
+	# Get the textbox for player name input
+	$self->{name} = $self->FindWindow('name');
+	# Set the focus to the textbox
+	$self->{name}->SetFocus();
+	
+	# Make 3 objects for each skill and connect them to the widgets
+	foreach my $skill(@skillnames)
+	{
+		$self->{$skill."stats"} = $self->FindWindow($skill.'stats');
+	}
+	
+	# Set default size
+	$self->SetSize(530,500);
+	
+	# Make sure the window cannot be resized smaller
+	$self->SetMinSize($self->GetSize);
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+sub lookup_player
+{
+	# Get the pointers
+	my $self = shift;
+	
+	# Get the name of the player
+	my $playername = $self->{name}->GetValue();
+	
+	# If playername is not empty
+	if ($playername !~ /^$/)
+	{
+		fetchstats($self, $playername);
+	}
+	
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+# Create mutator function from "Programming Perl"
+sub create_mutator
+{
+
+	my $self = shift;
+
+	# From "Programming Perl" 3rd Ed. p338.
+	for my $attribute (@_)
+	{
+
+		no strict "refs"; # So symbolic ref to typeglob works.
+		no warnings;      # Suppress "subroutine redefined" warning.
+
+		*$attribute = sub : lvalue
+		{
+
+			my $self = shift;
+
+			$self->{$attribute} = shift if @_;
+			$self->{$attribute};
+
+		};
+
+	}
+
+}
+
+
+### Events
+
+sub close_clicked
+{
+	# Get pointers
+	my ($self, $event) = @_;
+	
+	# Close window
+	$self->Destroy();
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+sub setScrollBars
+{
+	# Get the widgets to make scrollable
+	my @scrolledWindows = @_;
+	
+	# Set scroll properties
+	my $pixelsPerUnitX = 5; 
+    my $pixelsPerUnitY = 5; 
+    my $noUnitsX = 100; 
+    my $noUnitsY = 100; 
+	
+	# For each widget to make scrollable
+	foreach my $window (@scrolledWindows)
+	{
+		# Enable scrolling
+		$window->SetScrollbars($pixelsPerUnitX, $pixelsPerUnitY, $noUnitsX, $noUnitsY);
+	} 
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+sub set_tooltips
+{
+	my ($self) = @_;
+		
+	# Set tooltips with info about the settings
+	# $self->objectname->SetToolTip("message");
+	
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+sub fetchstats
+{
+	# Get pointers
+	my ($self, $player) = @_;
+	
+	# Get the highscores info of a player
+	my $highscore = get("http://hiscore.runescape.com/index_lite.ws?player=$player");
+	
+	# Suppress "uninitialized string" warning if lookup failed
+	no warnings;
+	
+	# If $highscore is empty
+	if ($highscore eq '')
+	{
+		# Tell in console that we found nothing
+		print "Player do not exist or is F2P account\n\n";
+		
+		# Set highscore to null
+		$highscore = '0';
+	}
+
+	# Enable warnings again
+	use warnings;
+
+	# If fetching highscore data was successful
+	if ($highscore !~ /^0$/)
+	{
+		# Split the data by whitespace
+		my @playerdata = split /\s/, $highscore;
+		
+		# Make a for loop that goes through the highscores info
+		my $counter;
+		for ($counter = 0; $counter <= $skillcount; $counter++)
+		{
+			# Split the playerdata by ,
+			my @skilldata  = split /,/, $playerdata[$counter];
+			
+			# Set the info into the level and rank labels of the skill
+			$self->{$skillnames[$counter]."stats"}->SetLabel("Level:\t$skilldata[1]\nRank:\t$skilldata[0]\nXP:\t\t$skilldata[2]");
+		}
+	}
+	else
+	{
+		# Make a for loop that goes through the highscores info
+		my $counter;
+		for ($counter = 0; $counter <= $skillcount; $counter++)
+		{	
+			# Set the info about the level, rank and xp label of the skill
+			$self->{$skillnames[$counter]."stats"}->SetLabel("Level: Not Ranked\nRank: Not Ranked\nXP: Not Ranked");
+		}
+	}
+	
+}
+
+#---------------------------------------- *** ----------------------------------------
+#---------------------------------------- *** ----------------------------------------
+#---------------------------------------- *** ----------------------------------------
+
+package application;
+use base qw(Wx::App);
+
+sub OnInit
+{
+	# Get pointers
+	my $self = shift;
+	
+	# Create mainwindow(new window)
+	my $mainwindow = wxTopLevelFrame->new(undef, -1);
+	
+	# Set mainwindo/topwindow
+	$self->SetTopWindow($mainwindow);
+	
+	# Show the window
+	$mainwindow->Show(1);
+}
+
+#---------------------------------------- *** ----------------------------------------
+#---------------------------------------- *** ----------------------------------------
+#---------------------------------------- *** ----------------------------------------
+
+
+package main;
+
+my $app = application->new;
+$app->MainLoop;
+

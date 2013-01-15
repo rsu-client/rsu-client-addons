@@ -1,0 +1,1297 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<resource xmlns="http://www.wxwindows.org/wxxrc" version="2.3.0.1">
+	<object class="wxFrame" name="mainwindow">
+		<style>wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL</style>
+		<size>438,463</size>
+		<title>Highscore Lookup</title>
+		<aui_managed>0</aui_managed>
+		<object class="wxScrolledWindow" name="mainframe">
+			<style>wxHSCROLL|wxVSCROLL</style>
+			<scrollrate>5,5</scrollrate>
+			<object class="wxBoxSizer">
+				<orient>wxVERTICAL</orient>
+				<object class="sizeritem">
+					<option>0</option>
+					<flag>wxALL|wxEXPAND</flag>
+					<border>5</border>
+					<object class="wxBoxSizer">
+						<orient>wxHORIZONTAL</orient>
+						<object class="sizeritem">
+							<option>2</option>
+							<flag>wxEXPAND</flag>
+							<border>5</border>
+							<object class="wxBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<object class="sizeritem">
+									<option>1</option>
+									<flag>wxEXPAND</flag>
+									<border>5</border>
+									<object class="wxFlexGridSizer">
+										<rows>1</rows>
+										<cols>2</cols>
+										<vgap>0</vgap>
+										<hgap>0</hgap>
+										<growablecols>1</growablecols>
+										<growablerows></growablerows>
+										<object class="sizeritem">
+											<option>0</option>
+											<flag>wxALIGN_CENTER|wxALL</flag>
+											<border>5</border>
+											<object class="wxStaticText" name="m_staticText2">
+												<label>Player:</label>
+												<wrap>-1</wrap>
+											</object>
+										</object>
+										<object class="sizeritem">
+											<option>1</option>
+											<flag>wxALL|wxEXPAND</flag>
+											<border>5</border>
+											<object class="wxTextCtrl" name="name">
+												<style>wxTE_CENTRE|wxTE_PROCESS_ENTER</style>
+												<value></value>
+												<maxlength>0</maxlength>
+											</object>
+										</object>
+									</object>
+								</object>
+								<object class="sizeritem">
+									<option>1</option>
+									<flag>wxEXPAND</flag>
+									<border>5</border>
+									<object class="wxFlexGridSizer">
+										<rows>1</rows>
+										<cols>1</cols>
+										<vgap>0</vgap>
+										<hgap>0</hgap>
+										<growablecols>0</growablecols>
+										<growablerows></growablerows>
+										<object class="sizeritem">
+											<option>1</option>
+											<flag>wxALIGN_CENTER|wxALL|wxEXPAND</flag>
+											<border>5</border>
+											<object class="wxButton" name="lookup">
+												<label>Lookup Stats</label>
+												<default>0</default>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+						</object>
+						<object class="sizeritem">
+							<option>1</option>
+							<flag>wxEXPAND</flag>
+							<border>5</border>
+							<object class="wxStaticBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<label>Total</label>
+								<object class="sizeritem">
+									<option>1</option>
+									<flag>wxEXPAND</flag>
+									<border>5</border>
+									<object class="wxFlexGridSizer">
+										<rows>1</rows>
+										<cols>2</cols>
+										<vgap>0</vgap>
+										<hgap>0</hgap>
+										<growablecols>0</growablecols>
+										<growablerows></growablerows>
+										<object class="sizeritem">
+											<option>0</option>
+											<flag>wxALL</flag>
+											<border>5</border>
+											<object class="wxStaticText" name="Overallstats">
+												<font>
+													<size>8</size>
+													<family>default</family>
+													<style>normal</style>
+													<weight>normal</weight>
+													<underlined>0</underlined>
+												</font>
+												<label>Level: \nRank: \nXP: </label>
+												<wrap>-1</wrap>
+											</object>
+										</object>
+										<object class="sizeritem">
+											<option>0</option>
+											<flag></flag>
+											<border>5</border>
+											<object class="wxStaticBitmap" name="Overallicon">
+												<bitmap>bitmaps/overall.png</bitmap>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+						</object>
+					</object>
+				</object>
+				<object class="sizeritem">
+					<option>1</option>
+					<flag>wxEXPAND | wxALL</flag>
+					<border>5</border>
+					<object class="wxScrolledWindow" name="mainpanel">
+						<style>wxHSCROLL|wxVSCROLL</style>
+						<scrollrate>5,5</scrollrate>
+						<object class="wxGridSizer">
+							<rows>9</rows>
+							<cols>3</cols>
+							<vgap>0</vgap>
+							<hgap>0</hgap>
+							<object class="sizeritem">
+								<option>1</option>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<object class="wxStaticBoxSizer">
+									<orient>wxHORIZONTAL</orient>
+									<label>Attack</label>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxFlexGridSizer">
+											<rows>1</rows>
+											<cols>2</cols>
+											<vgap>0</vgap>
+											<hgap>0</hgap>
+											<growablecols>0</growablecols>
+											<growablerows></growablerows>
+											<object class="sizeritem">
+												<option>1</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="Attackstats">
+													<font>
+														<size>8</size>
+														<family>default</family>
+														<style>normal</style>
+														<weight>normal</weight>
+														<underlined>0</underlined>
+													</font>
+													<label>Level: \nRank: \nXP: </label>
+													<wrap>-1</wrap>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag></flag>
+												<border>5</border>
+												<object class="wxStaticBitmap" name="Attackicon">
+													<bitmap>bitmaps/attack.png</bitmap>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+							<object class="sizeritem">
+								<option>1</option>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<object class="wxStaticBoxSizer">
+									<orient>wxVERTICAL</orient>
+									<label>Constitution</label>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxFlexGridSizer">
+											<rows>1</rows>
+											<cols>2</cols>
+											<vgap>0</vgap>
+											<hgap>0</hgap>
+											<growablecols>0</growablecols>
+											<growablerows></growablerows>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="Constitutionstats">
+													<font>
+														<size>8</size>
+														<family>default</family>
+														<style>normal</style>
+														<weight>normal</weight>
+														<underlined>0</underlined>
+													</font>
+													<label>Level: \nRank: \nXP: </label>
+													<wrap>-1</wrap>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag></flag>
+												<border>5</border>
+												<object class="wxStaticBitmap" name="Constitutionicon">
+													<bitmap>bitmaps/constitution.png</bitmap>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+							<object class="sizeritem">
+								<option>1</option>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<object class="wxStaticBoxSizer">
+									<orient>wxVERTICAL</orient>
+									<label>Mining</label>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxFlexGridSizer">
+											<rows>1</rows>
+											<cols>2</cols>
+											<vgap>0</vgap>
+											<hgap>0</hgap>
+											<growablecols>0</growablecols>
+											<growablerows></growablerows>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="Miningstats">
+													<font>
+														<size>8</size>
+														<family>default</family>
+														<style>normal</style>
+														<weight>normal</weight>
+														<underlined>0</underlined>
+													</font>
+													<label>Level:\nRank: \nXP: </label>
+													<wrap>-1</wrap>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag></flag>
+												<border>5</border>
+												<object class="wxStaticBitmap" name="Miningicon">
+													<bitmap>bitmaps/mining.png</bitmap>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+							<object class="sizeritem">
+								<option>1</option>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<object class="wxStaticBoxSizer">
+									<orient>wxVERTICAL</orient>
+									<label>Strength</label>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxFlexGridSizer">
+											<rows>1</rows>
+											<cols>2</cols>
+											<vgap>0</vgap>
+											<hgap>0</hgap>
+											<growablecols>0</growablecols>
+											<growablerows></growablerows>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="Strengthstats">
+													<font>
+														<size>8</size>
+														<family>default</family>
+														<style>normal</style>
+														<weight>normal</weight>
+														<underlined>0</underlined>
+													</font>
+													<label>Level: \nRank: \nXP: </label>
+													<wrap>-1</wrap>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag></flag>
+												<border>5</border>
+												<object class="wxStaticBitmap" name="Strengthicon">
+													<bitmap>bitmaps/strength.png</bitmap>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+							<object class="sizeritem">
+								<option>1</option>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<object class="wxStaticBoxSizer">
+									<orient>wxVERTICAL</orient>
+									<label>Agility</label>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxFlexGridSizer">
+											<rows>1</rows>
+											<cols>2</cols>
+											<vgap>0</vgap>
+											<hgap>0</hgap>
+											<growablecols>0</growablecols>
+											<growablerows></growablerows>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="Agilitystats">
+													<font>
+														<size>8</size>
+														<family>default</family>
+														<style>normal</style>
+														<weight>normal</weight>
+														<underlined>0</underlined>
+													</font>
+													<label>Level: \nRank: \nXP: </label>
+													<wrap>-1</wrap>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag></flag>
+												<border>5</border>
+												<object class="wxStaticBitmap" name="Agilityicon">
+													<bitmap>bitmaps/agility.png</bitmap>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+							<object class="sizeritem">
+								<option>1</option>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<object class="wxStaticBoxSizer">
+									<orient>wxVERTICAL</orient>
+									<label>Smithing</label>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxFlexGridSizer">
+											<rows>1</rows>
+											<cols>2</cols>
+											<vgap>0</vgap>
+											<hgap>0</hgap>
+											<growablecols>0</growablecols>
+											<growablerows></growablerows>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="Smithingstats">
+													<font>
+														<size>8</size>
+														<family>default</family>
+														<style>normal</style>
+														<weight>normal</weight>
+														<underlined>0</underlined>
+													</font>
+													<label>Level: \nRank: \nXP: </label>
+													<wrap>-1</wrap>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag></flag>
+												<border>5</border>
+												<object class="wxStaticBitmap" name="Smithingicon">
+													<bitmap>bitmaps/smithing.png</bitmap>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+							<object class="sizeritem">
+								<option>1</option>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<object class="wxStaticBoxSizer">
+									<orient>wxVERTICAL</orient>
+									<label>Defence</label>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxFlexGridSizer">
+											<rows>1</rows>
+											<cols>2</cols>
+											<vgap>0</vgap>
+											<hgap>0</hgap>
+											<growablecols>0</growablecols>
+											<growablerows></growablerows>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="Defencestats">
+													<font>
+														<size>8</size>
+														<family>default</family>
+														<style>normal</style>
+														<weight>normal</weight>
+														<underlined>0</underlined>
+													</font>
+													<label>Level: \nRank: \nXP: </label>
+													<wrap>-1</wrap>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag></flag>
+												<border>5</border>
+												<object class="wxStaticBitmap" name="Defenceicon">
+													<bitmap>bitmaps/defence.png</bitmap>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+							<object class="sizeritem">
+								<option>1</option>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<object class="wxStaticBoxSizer">
+									<orient>wxVERTICAL</orient>
+									<label>Herblore</label>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxFlexGridSizer">
+											<rows>1</rows>
+											<cols>2</cols>
+											<vgap>0</vgap>
+											<hgap>0</hgap>
+											<growablecols>0</growablecols>
+											<growablerows></growablerows>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="Herblorestats">
+													<font>
+														<size>8</size>
+														<family>default</family>
+														<style>normal</style>
+														<weight>normal</weight>
+														<underlined>0</underlined>
+													</font>
+													<label>Level: \nRank: \nXP: </label>
+													<wrap>-1</wrap>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag></flag>
+												<border>5</border>
+												<object class="wxStaticBitmap" name="Herbloreicon">
+													<bitmap>bitmaps/herblore.png</bitmap>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+							<object class="sizeritem">
+								<option>1</option>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<object class="wxStaticBoxSizer">
+									<orient>wxVERTICAL</orient>
+									<label>Fishing</label>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxFlexGridSizer">
+											<rows>1</rows>
+											<cols>2</cols>
+											<vgap>0</vgap>
+											<hgap>0</hgap>
+											<growablecols>0</growablecols>
+											<growablerows></growablerows>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="Fishingstats">
+													<font>
+														<size>8</size>
+														<family>default</family>
+														<style>normal</style>
+														<weight>normal</weight>
+														<underlined>0</underlined>
+													</font>
+													<label>Level: \nRank: \nXP: </label>
+													<wrap>-1</wrap>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag></flag>
+												<border>5</border>
+												<object class="wxStaticBitmap" name="Fishingicon">
+													<bitmap>bitmaps/fishing.png</bitmap>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+							<object class="sizeritem">
+								<option>1</option>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<object class="wxStaticBoxSizer">
+									<orient>wxVERTICAL</orient>
+									<label>Ranged</label>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxFlexGridSizer">
+											<rows>1</rows>
+											<cols>2</cols>
+											<vgap>0</vgap>
+											<hgap>0</hgap>
+											<growablecols>0</growablecols>
+											<growablerows></growablerows>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="Rangedstats">
+													<font>
+														<size>8</size>
+														<family>default</family>
+														<style>normal</style>
+														<weight>normal</weight>
+														<underlined>0</underlined>
+													</font>
+													<label>Level: \nRank: \nXP: </label>
+													<wrap>-1</wrap>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag></flag>
+												<border>5</border>
+												<object class="wxStaticBitmap" name="Rangedicon">
+													<bitmap>bitmaps/ranged.png</bitmap>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+							<object class="sizeritem">
+								<option>1</option>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<object class="wxStaticBoxSizer">
+									<orient>wxVERTICAL</orient>
+									<label>Thieving</label>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxFlexGridSizer">
+											<rows>1</rows>
+											<cols>2</cols>
+											<vgap>0</vgap>
+											<hgap>0</hgap>
+											<growablecols>0</growablecols>
+											<growablerows></growablerows>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="Thievingstats">
+													<font>
+														<size>8</size>
+														<family>default</family>
+														<style>normal</style>
+														<weight>normal</weight>
+														<underlined>0</underlined>
+													</font>
+													<label>Level: \nRank: \nXP: </label>
+													<wrap>-1</wrap>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag></flag>
+												<border>5</border>
+												<object class="wxStaticBitmap" name="Thievingicon">
+													<bitmap>bitmaps/thieving.png</bitmap>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+							<object class="sizeritem">
+								<option>1</option>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<object class="wxStaticBoxSizer">
+									<orient>wxVERTICAL</orient>
+									<label>Cooking</label>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxFlexGridSizer">
+											<rows>1</rows>
+											<cols>2</cols>
+											<vgap>0</vgap>
+											<hgap>0</hgap>
+											<growablecols>0</growablecols>
+											<growablerows></growablerows>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="Cookingstats">
+													<font>
+														<size>8</size>
+														<family>default</family>
+														<style>normal</style>
+														<weight>normal</weight>
+														<underlined>0</underlined>
+													</font>
+													<label>Level: \nRank: \nXP: </label>
+													<wrap>-1</wrap>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag></flag>
+												<border>5</border>
+												<object class="wxStaticBitmap" name="Cookingicon">
+													<bitmap>bitmaps/cooking.png</bitmap>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+							<object class="sizeritem">
+								<option>1</option>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<object class="wxStaticBoxSizer">
+									<orient>wxVERTICAL</orient>
+									<label>Prayer</label>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxFlexGridSizer">
+											<rows>1</rows>
+											<cols>2</cols>
+											<vgap>0</vgap>
+											<hgap>0</hgap>
+											<growablecols>0</growablecols>
+											<growablerows></growablerows>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="Prayerstats">
+													<font>
+														<size>8</size>
+														<family>default</family>
+														<style>normal</style>
+														<weight>normal</weight>
+														<underlined>0</underlined>
+													</font>
+													<label>Level: \nRank: \nXP: </label>
+													<wrap>-1</wrap>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag></flag>
+												<border>5</border>
+												<object class="wxStaticBitmap" name="Prayericon">
+													<bitmap>bitmaps/prayer.png</bitmap>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+							<object class="sizeritem">
+								<option>1</option>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<object class="wxStaticBoxSizer">
+									<orient>wxVERTICAL</orient>
+									<label>Crafting</label>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxFlexGridSizer">
+											<rows>1</rows>
+											<cols>2</cols>
+											<vgap>0</vgap>
+											<hgap>0</hgap>
+											<growablecols>0</growablecols>
+											<growablerows></growablerows>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="Craftingstats">
+													<font>
+														<size>8</size>
+														<family>default</family>
+														<style>normal</style>
+														<weight>normal</weight>
+														<underlined>0</underlined>
+													</font>
+													<label>Level: \nRank: \nXP: </label>
+													<wrap>-1</wrap>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag></flag>
+												<border>5</border>
+												<object class="wxStaticBitmap" name="Craftingicon">
+													<bitmap>bitmaps/crafting.png</bitmap>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+							<object class="sizeritem">
+								<option>1</option>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<object class="wxStaticBoxSizer">
+									<orient>wxVERTICAL</orient>
+									<label>Firemaking</label>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxFlexGridSizer">
+											<rows>1</rows>
+											<cols>2</cols>
+											<vgap>0</vgap>
+											<hgap>0</hgap>
+											<growablecols>0</growablecols>
+											<growablerows></growablerows>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="Firemakingstats">
+													<font>
+														<size>8</size>
+														<family>default</family>
+														<style>normal</style>
+														<weight>normal</weight>
+														<underlined>0</underlined>
+													</font>
+													<label>Level: \nRank: \nXP: </label>
+													<wrap>-1</wrap>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag></flag>
+												<border>5</border>
+												<object class="wxStaticBitmap" name="Firemakingicon">
+													<bitmap>bitmaps/firemaking.png</bitmap>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+							<object class="sizeritem">
+								<option>1</option>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<object class="wxStaticBoxSizer">
+									<orient>wxVERTICAL</orient>
+									<label>Magic</label>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxFlexGridSizer">
+											<rows>1</rows>
+											<cols>2</cols>
+											<vgap>0</vgap>
+											<hgap>0</hgap>
+											<growablecols>0</growablecols>
+											<growablerows></growablerows>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="Magicstats">
+													<font>
+														<size>8</size>
+														<family>default</family>
+														<style>normal</style>
+														<weight>normal</weight>
+														<underlined>0</underlined>
+													</font>
+													<label>Level: \nRank: \nXP: </label>
+													<wrap>-1</wrap>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag></flag>
+												<border>5</border>
+												<object class="wxStaticBitmap" name="Magicicon">
+													<bitmap>bitmaps/magic.png</bitmap>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+							<object class="sizeritem">
+								<option>1</option>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<object class="wxStaticBoxSizer">
+									<orient>wxVERTICAL</orient>
+									<label>Fletching</label>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxFlexGridSizer">
+											<rows>1</rows>
+											<cols>2</cols>
+											<vgap>0</vgap>
+											<hgap>0</hgap>
+											<growablecols>0</growablecols>
+											<growablerows></growablerows>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="Fletchingstats">
+													<font>
+														<size>8</size>
+														<family>default</family>
+														<style>normal</style>
+														<weight>normal</weight>
+														<underlined>0</underlined>
+													</font>
+													<label>Level: \nRank: \nXP: </label>
+													<wrap>-1</wrap>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag></flag>
+												<border>5</border>
+												<object class="wxStaticBitmap" name="Fletchingicon">
+													<bitmap>bitmaps/fletching.png</bitmap>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+							<object class="sizeritem">
+								<option>1</option>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<object class="wxStaticBoxSizer">
+									<orient>wxVERTICAL</orient>
+									<label>Woodcutting</label>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxFlexGridSizer">
+											<rows>1</rows>
+											<cols>2</cols>
+											<vgap>0</vgap>
+											<hgap>0</hgap>
+											<growablecols>0</growablecols>
+											<growablerows></growablerows>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="Woodcuttingstats">
+													<font>
+														<size>8</size>
+														<family>default</family>
+														<style>normal</style>
+														<weight>normal</weight>
+														<underlined>0</underlined>
+													</font>
+													<label>Level: \nRank: \nXP: </label>
+													<wrap>-1</wrap>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag></flag>
+												<border>5</border>
+												<object class="wxStaticBitmap" name="Woodcuttingicon">
+													<bitmap>bitmaps/woodcutting.png</bitmap>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+							<object class="sizeritem">
+								<option>1</option>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<object class="wxStaticBoxSizer">
+									<orient>wxVERTICAL</orient>
+									<label>Runecrafting</label>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxFlexGridSizer">
+											<rows>1</rows>
+											<cols>2</cols>
+											<vgap>0</vgap>
+											<hgap>0</hgap>
+											<growablecols>0</growablecols>
+											<growablerows></growablerows>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="Runecraftingstats">
+													<font>
+														<size>8</size>
+														<family>default</family>
+														<style>normal</style>
+														<weight>normal</weight>
+														<underlined>0</underlined>
+													</font>
+													<label>Level: \nRank: \nXP: </label>
+													<wrap>-1</wrap>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag></flag>
+												<border>5</border>
+												<object class="wxStaticBitmap" name="Runecraftingicon">
+													<bitmap>bitmaps/runecrafting.png</bitmap>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+							<object class="sizeritem">
+								<option>1</option>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<object class="wxStaticBoxSizer">
+									<orient>wxVERTICAL</orient>
+									<label>Slayer</label>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxFlexGridSizer">
+											<rows>1</rows>
+											<cols>2</cols>
+											<vgap>0</vgap>
+											<hgap>0</hgap>
+											<growablecols>0</growablecols>
+											<growablerows></growablerows>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="Slayerstats">
+													<font>
+														<size>8</size>
+														<family>default</family>
+														<style>normal</style>
+														<weight>normal</weight>
+														<underlined>0</underlined>
+													</font>
+													<label>Level: \nRank: \nXP: </label>
+													<wrap>-1</wrap>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag></flag>
+												<border>5</border>
+												<object class="wxStaticBitmap" name="Slayericon">
+													<bitmap>bitmaps/slayer.png</bitmap>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+							<object class="sizeritem">
+								<option>1</option>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<object class="wxStaticBoxSizer">
+									<orient>wxVERTICAL</orient>
+									<label>Farming</label>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxFlexGridSizer">
+											<rows>1</rows>
+											<cols>2</cols>
+											<vgap>0</vgap>
+											<hgap>0</hgap>
+											<growablecols>0</growablecols>
+											<growablerows></growablerows>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="Farmingstats">
+													<font>
+														<size>8</size>
+														<family>default</family>
+														<style>normal</style>
+														<weight>normal</weight>
+														<underlined>0</underlined>
+													</font>
+													<label>Level: \nRank: \nXP: </label>
+													<wrap>-1</wrap>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag></flag>
+												<border>5</border>
+												<object class="wxStaticBitmap" name="Farmingicon">
+													<bitmap>bitmaps/farming.png</bitmap>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+							<object class="sizeritem">
+								<option>1</option>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<object class="wxStaticBoxSizer">
+									<orient>wxVERTICAL</orient>
+									<label>Construction</label>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxFlexGridSizer">
+											<rows>1</rows>
+											<cols>2</cols>
+											<vgap>0</vgap>
+											<hgap>0</hgap>
+											<growablecols>0</growablecols>
+											<growablerows></growablerows>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="Constructionstats">
+													<font>
+														<size>8</size>
+														<family>default</family>
+														<style>normal</style>
+														<weight>normal</weight>
+														<underlined>0</underlined>
+													</font>
+													<label>Level: \nRank: \nXP: </label>
+													<wrap>-1</wrap>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag></flag>
+												<border>5</border>
+												<object class="wxStaticBitmap" name="Constructionicon">
+													<bitmap>bitmaps/construction.png</bitmap>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+							<object class="sizeritem">
+								<option>1</option>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<object class="wxStaticBoxSizer">
+									<orient>wxVERTICAL</orient>
+									<label>Hunter</label>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxFlexGridSizer">
+											<rows>1</rows>
+											<cols>2</cols>
+											<vgap>0</vgap>
+											<hgap>0</hgap>
+											<growablecols>0</growablecols>
+											<growablerows></growablerows>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="Hunterstats">
+													<font>
+														<size>8</size>
+														<family>default</family>
+														<style>normal</style>
+														<weight>normal</weight>
+														<underlined>0</underlined>
+													</font>
+													<label>Level: \nRank: \nXP: </label>
+													<wrap>-1</wrap>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag></flag>
+												<border>5</border>
+												<object class="wxStaticBitmap" name="Huntericon">
+													<bitmap>bitmaps/hunter.png</bitmap>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+							<object class="sizeritem">
+								<option>1</option>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<object class="wxStaticBoxSizer">
+									<orient>wxVERTICAL</orient>
+									<label>Summoning</label>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxFlexGridSizer">
+											<rows>1</rows>
+											<cols>2</cols>
+											<vgap>0</vgap>
+											<hgap>0</hgap>
+											<growablecols>0</growablecols>
+											<growablerows></growablerows>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="Summoningstats">
+													<font>
+														<size>8</size>
+														<family>default</family>
+														<style>normal</style>
+														<weight>normal</weight>
+														<underlined>0</underlined>
+													</font>
+													<label>Level: \nRank: \nXP: </label>
+													<wrap>-1</wrap>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag></flag>
+												<border>5</border>
+												<object class="wxStaticBitmap" name="Summoningicon">
+													<bitmap>bitmaps/summoning.png</bitmap>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+							<object class="sizeritem">
+								<option>1</option>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<object class="wxStaticBoxSizer">
+									<orient>wxVERTICAL</orient>
+									<label>Dungeoneering</label>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxFlexGridSizer">
+											<rows>1</rows>
+											<cols>2</cols>
+											<vgap>0</vgap>
+											<hgap>0</hgap>
+											<growablecols>0</growablecols>
+											<growablerows></growablerows>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxALL</flag>
+												<border>5</border>
+												<object class="wxStaticText" name="Dungeoneeringstats">
+													<font>
+														<size>8</size>
+														<family>default</family>
+														<style>normal</style>
+														<weight>normal</weight>
+														<underlined>0</underlined>
+													</font>
+													<label>Level: \nRank: \nXP: </label>
+													<wrap>-1</wrap>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag></flag>
+												<border>5</border>
+												<object class="wxStaticBitmap" name="Dungeoneeringicon">
+													<bitmap>bitmaps/dungeoneering.png</bitmap>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+						</object>
+					</object>
+				</object>
+			</object>
+		</object>
+	</object>
+</resource>
