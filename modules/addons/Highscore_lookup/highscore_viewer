@@ -311,8 +311,18 @@ sub fetchstats
 			# Split the playerdata by ,
 			my @skilldata  = split /,/, $playerdata[$counter];
 			
-			# Set the info into the level and rank labels of the skill
-			$self->{$skillnames[$counter]."stats"}->SetLabel("Level:\t$skilldata[1]\nRank:\t$skilldata[0]\nXP:\t\t$skilldata[2]");
+			# If skill is ranked
+			if ($skilldata[0] !~ /-1/)
+			{
+				# Set the info into the level and rank labels of the skill
+				$self->{$skillnames[$counter]."stats"}->SetLabel("Level:\t$skilldata[1]\nRank:\t$skilldata[0]\nXP:\t\t$skilldata[2]");
+			}
+			# Else
+			else
+			{
+				# Set the info as Not Available
+				$self->{$skillnames[$counter]."stats"}->SetLabel("Level:\tN/A\nRank:\tN/A\nXP:\t\tN/A");
+			}
 		}
 	}
 	else
@@ -322,7 +332,7 @@ sub fetchstats
 		for ($counter = 0; $counter <= $skillcount; $counter++)
 		{	
 			# Set the info about the level, rank and xp label of the skill
-			$self->{$skillnames[$counter]."stats"}->SetLabel("Level: Not Ranked\nRank: Not Ranked\nXP: Not Ranked");
+			$self->{$skillnames[$counter]."stats"}->SetLabel("Level:\tN/A\nRank:\tN/A\nXP:\t\tN/A");
 		}
 	}
 	
