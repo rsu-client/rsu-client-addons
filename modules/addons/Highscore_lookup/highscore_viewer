@@ -244,8 +244,8 @@ sub setScrollBars
 	my @scrolledWindows = @_;
 	
 	# Set scroll properties
-	my $pixelsPerUnitX = 5; 
-    my $pixelsPerUnitY = 5; 
+	my $pixelsPerUnitX = 15; 
+    my $pixelsPerUnitY = 15; 
     my $noUnitsX = 100; 
     my $noUnitsY = 100; 
 	
