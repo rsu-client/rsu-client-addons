@@ -165,10 +165,11 @@ sub set_layout
 	}
 	
 	# Set default size
-	$self->SetSize(545,520);
+	$self->SetSize(490,520);
 	
 	# Make sure the window cannot be resized smaller
 	$self->SetMinSize($self->GetSize);
+	$self->SetMaxSize($self->GetSize);
 }
 
 #
@@ -244,8 +245,8 @@ sub setScrollBars
 	my @scrolledWindows = @_;
 	
 	# Set scroll properties
-	my $pixelsPerUnitX = 5; 
-    my $pixelsPerUnitY = 5; 
+	my $pixelsPerUnitX = 15; 
+    my $pixelsPerUnitY = 15; 
     my $noUnitsX = 100; 
     my $noUnitsY = 100; 
 	
