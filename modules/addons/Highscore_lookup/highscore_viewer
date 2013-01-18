@@ -315,14 +315,35 @@ sub fetchstats
 			# If skill is ranked
 			if ($skilldata[0] !~ /-1/)
 			{
-				# Set the info into the level and rank labels of the skill
-				$self->{$skillnames[$counter]."stats"}->SetLabel("Level:\t$skilldata[1]\nRank:\t$skilldata[0]\nXP:\t\t$skilldata[2]");
+				# If we are on windows
+				if ($OS =~ /MSWin32/)
+				{
+					# Set the info into the level and rank labels of the skill
+					$self->{$skillnames[$counter]."stats"}->SetLabel("Level: $skilldata[1]\nRank: $skilldata[0]\nXP:     $skilldata[2]");
+				}
+				# Else
+				else
+				{
+					# Set the info into the level and rank labels of the skill
+					$self->{$skillnames[$counter]."stats"}->SetLabel("Level:\t$skilldata[1]\nRank:\t$skilldata[0]\nXP:\t\t$skilldata[2]");
+				}
 			}
 			# Else
 			else
 			{
-				# Set the info as Not Available
-				$self->{$skillnames[$counter]."stats"}->SetLabel("Level:\tN/A\nRank:\tN/A\nXP:\t\tN/A");
+				# If we are on windows
+				if ($OS =~ /MSWin32/)
+				{
+					# Set the info as Not Available
+					$self->{$skillnames[$counter]."stats"}->SetLabel("Level: N/A\nRank: N/A\nXP:     N/A");
+				}
+				# Else
+				else
+				{
+					# Set the info as Not Available
+					$self->{$skillnames[$counter]."stats"}->SetLabel("Level:\tN/A\nRank:\tN/A\nXP:\t\tN/A");
+				}
+				
 			}
 		}
 	}
