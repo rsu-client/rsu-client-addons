@@ -7,10 +7,12 @@ use FindBin;
 use Wx::Perl::Packager;
 use Wx qw[:everything];
 use Wx::XRC;
-use Wx::WebView;
 
 # Use LWP::Simple module to get website content (crossplatform)
 use LWP::Simple;
+
+# Make sure the script works on almost any localization
+use Encode::Byte;
 
 # Load the runescape script inside this loader 
 #(if this loader is packaged with PAR::Packer this 

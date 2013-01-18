@@ -170,6 +170,11 @@ sub set_layout
 	# Make sure the window cannot be resized smaller
 	$self->SetMinSize($self->GetSize);
 	$self->SetMaxSize($self->GetSize);
+	
+	# Set the layout
+	$self->Layout;
+	# Refresh window
+	$self->Refresh;
 }
 
 #
