@@ -11,7 +11,8 @@ use Wx::XRC;
 # Use LWP::Simple module to get website content (crossplatform)
 use LWP::Simple;
 
-# Make sure the script works on almost any localization
+# Include the byte encryption so that the script will work on all localizations of windows
+# Odd i know, but it is caused by the windows codepages (like chcp 1252 which is scandinavian)
 use Encode::Byte;
 
 # Load the runescape script inside this loader 
