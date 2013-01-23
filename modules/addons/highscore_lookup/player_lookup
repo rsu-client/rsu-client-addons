@@ -338,13 +338,13 @@ sub set_playerinfo
 	if ($playerinfo =~ /,clan:/)
 	{
 		# Fish out the player name, title and memberstatus
-		$playerinfo =~ s/^member:(.+),title:(|.+),clan:.+,name:(.+),recruiting:.+,world.*/Name:\t $3\nTitle:\t $2\nMember:  $1/g;
+		$playerinfo =~ s/^member:(.+),title:(|.+),clan:.+,name:(.+),recruiting:.+,world.*/Name: $3\nTitle: $2\nMember: $1/g;
 	}
 	# Else player is not in a clan
 	else
 	{
 		# Fish out the player name, title and memberstatus
-		$playerinfo =~ s/^member:(.+),title:(|.+),name:(.+),world.*/Name:\t $3\nTitle:\t $2\nMember:  $1/g;
+		$playerinfo =~ s/^member:(.+),title:(|.+),name:(.+),world.*/Name: $3\nTitle: $2\nMember: $1/g;
 	}
 	
 	# Add the info to the window
