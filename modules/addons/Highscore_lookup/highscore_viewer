@@ -12,6 +12,9 @@ my $skillcount = 25;
 # Use FindBin module to get script directory
 use FindBin;
 
+# Add a folder with custom modules to the @INC
+use lib $FindBin::RealBin."/modules";
+
 # Name of our xrc gui resource file
 my $xrc_gui_file = "windowframe.xrc";
 
@@ -56,6 +59,9 @@ use base qw(Wx::Frame Wx::ScrolledWindow);
 
 # Use LWP::Simple module to get website content (crossplatform)
 use LWP::Simple;
+
+# Use an xml/rss parser for the recent player activity
+use XML::RSSLite;
 
 
 sub new
@@ -148,10 +154,13 @@ sub set_layout
 	# Find the widgets
 	# $self->objectname = $self->FindWindow('objectname');
 	
-	# Get the mainpanel
-	$self->{mainpanel} = $self->FindWindow('mainpanel');
+	# Get the highscores panel
+	$self->{highscores} = $self->FindWindow('highscores');
 	# Make it scrollable
-	setScrollBars($self->{mainpanel});
+	setScrollBars($self->{highscores});
+	
+	# Get the recentactivity panel
+	$self->{recentactivity_panel} = $self->FindWindow('recentactivity_panel');
 	
 	# Get the textbox for player name input
 	$self->{name} = $self->FindWindow('name');
@@ -163,6 +172,21 @@ sub set_layout
 	{
 		$self->{$skill."stats"} = $self->FindWindow($skill.'stats');
 	}
+	
+	# Get the playerbio label
+	$self->{playerinfo} = $self->FindWindow('playerinfo');
+	
+	# Get the claninfo label
+	$self->{claninfo} = $self->FindWindow('claninfo');
+	
+	# Get the recentactivity label
+	$self->{recentactivity} = $self->FindWindow('recentactivity');
+	
+	# Get the chathead bitmap widget
+	$self->{chathead} = $self->FindWindow('chathead');
+	
+	# Get the fullavatar bitmap widget
+	$self->{fullavatar} = $self->FindWindow('fullavatar');
 	
 	# Set default size
 	$self->SetSize(490,520);
@@ -193,6 +217,7 @@ sub lookup_player
 	if ($playername !~ /^$/)
 	{
 		fetchstats($self, $playername);
+		fetchplayerdata($self, $playername);
 	}
 	
 }
@@ -273,6 +298,200 @@ sub set_tooltips
 		
 	# Set tooltips with info about the settings
 	# $self->objectname->SetToolTip("message");
+	
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+sub set_avatar
+{
+	# Get the passed parameters
+	my ($self, $player) = @_;
+	
+	# Fetch the chathead and full avatar from runescape.com
+	getstore("http://services.runescape.com/m=avatar-rs/$player/chat.png", "$cwd/bitmaps/chat_tmp.png");
+	getstore("http://services.runescape.com/m=avatar-rs/$player/full.png", "$cwd/bitmaps/full_tmp.png");	
+	
+	# Load the downloaded chathead into the window
+	$self->{chathead}->SetBitmap(Wx::Bitmap->new("$cwd/bitmaps/chat_tmp.png", wxBITMAP_TYPE_PNG));
+	# Load the downloaded full avatar into the window
+	$self->{fullavatar}->SetBitmap(Wx::Bitmap->new("$cwd/bitmaps/full_tmp.png", wxBITMAP_TYPE_PNG));
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+sub set_playerinfo
+{
+	# Get the passed data
+	my ($self, $playerinfo) = @_;
+	
+	# Replace member:true with member:Yes
+	$playerinfo =~ s/member:true/member:Yes/;
+	# Replace member:false with member:No
+	$playerinfo =~ s/member:false/member:No/;
+	
+	# If the player is in a clan
+	if ($playerinfo =~ /,clan:/)
+	{
+		# Fish out the player name, title and memberstatus
+		$playerinfo =~ s/^member:(.+),title:(|.+),clan:.+,name:(.+),recruiting:.+,world.*/Name:  $3\nTitle:      $2\nMember:  $1/g;
+	}
+	# Else player is not in a clan
+	else
+	{
+		# Fish out the player name, title and memberstatus
+		$playerinfo =~ s/^member:(.+),title:(|.+),name:(.+),world.*/Name:  $3\nTitle:      $2\nMember:  $1/g;
+	}
+	
+	# Add the info to the window
+	$self->{playerinfo}->SetLabel($playerinfo);
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+sub set_claninfo
+{
+	# Fetch the passed data
+	my ($self, $claninfo) = @_;
+	
+	# If the player is in a clan
+	if ($claninfo =~ /,clan:/)
+	{
+		# Fish out the clan name (if any) and prepare it for the label
+		$claninfo =~ s/^.+,clan:(.+),n.+,recruiting:(true|false),w.+/Clan:  $1\nRecruiting: $2/g;
+		
+		# Replace true with Yes and false with No
+		$claninfo =~ s/Recruiting: true/This clan is currently\nrecruiting people!/;
+		$claninfo =~ s/Recruiting: false/This clan is currently\nNOT recruiting people./;
+	}
+	# Else
+	else
+	{
+		# Set Clan and Recruiting to empty
+		$claninfo = "Clan: ";
+	}
+	
+	# Add the clanstatus into the window
+	$self->{claninfo}->SetLabel($claninfo);
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+sub set_recent_activity
+{
+	# Get the passed data
+	my ($self, $player) = @_;
+	
+	# Fetch the recent activity rss feed
+	my $rssfeed = get("http://services.runescape.com/m=adventurers-log/rssfeed?searchName=$player");
+	
+	# Make a hash reference for the RSSLite parser
+	my %recent_activity;
+	
+	# Parse the RSSfeed
+	parseRSS(\%recent_activity, \$rssfeed);
+	
+	# Make a variable to contain the players activity
+	my $activity = "\n";
+	
+	# For each value in the array
+	foreach my $item (@{$recent_activity{'item'}})
+	{
+		# Get the published date so we can remove the unused time
+		my $pubDate = "$item->{'pubDate'}";
+		
+		# Remove the timestamp because it is always 00:00:00 GMT
+		$pubDate =~ s/\s+\d{2,2}:\d{2,2}:\d{2,2}\s+GMT//g;
+		
+		# Make a variable to contain the description because it needs fixing too
+		my $description = $item->{'description'};
+		
+		# Remove all tabs
+		$description =~ s/^\s+//g;
+		
+		# Replace all multiple whitespaces with normal whitespace
+		$description =~ s/\s+/ /g;
+		
+		$activity = $activity."$item->{'title'} - $pubDate\n$description\n___________________________________\n\n";
+	}
+	
+	# Fix some stuff in the finished activity list
+	$activity =~ s/(&#8217;|&APOS;)/'/gi;
+	
+	# Add the recent activity to the window
+	$self->{recentactivity}->SetLabel($activity);
+	
+	# Make the label wrap
+	$self->{recentactivity}->Wrap(400);
+	
+	## Replace pubDate with date
+	#$rssfeed =~ s/pubDate/url/g;
+	
+	## Make a namespace for the rss parser
+	#my $rsslite = new XML::RSS::Parser::Lite;
+	
+	## Parse the rssfeed
+	#$rsslite->parse($rssfeed);
+	
+	## Loop through every item in the feed
+	#for (my $i = 0; $i < $rsslite->count(); $i++) {
+		## Make a holder for the current item
+		#my $item = $rsslite->get($i);
+		#print $item->get('title') . "\n" . $item->get('description') . "\n" . $item->get('url') . "\n_________________________________\n\n";
+	#}
+	
+	
+	
+	# Make it scrollable
+	setScrollBars($self->{recentactivity_panel});
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+sub set_playerbio
+{
+	# Get the passed data
+	my ($self, $player) = @_;
+	
+	# Fetch the player details
+	my $jquerystring = get('http://services.runescape.com/m=website-data/g=runescape/playerDetails.ws?names=["'.$player.'"]&callback=jQuery000000000000000_0000000000');
+	
+	# Remove unneeded parts of the output
+	$jquerystring =~ s/(jQuery000000000000000_0000000000\(\[\{|"|\}\]\);)//g;
+	
+	# Parse and set the player claninfo
+	set_claninfo($self, $jquerystring);
+	
+	# Parse and set the playerbio info
+	set_playerinfo($self, $jquerystring);
+	
+	# Parse the players recent activity and display it on the window
+	set_recent_activity($self,$player)
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+sub fetchplayerdata
+{
+	# Get the passed data
+	my ($self, $player) = @_;
+	
+	# Fetch the players display pictures and load them into the window
+	set_avatar($self, $player);
+	
+	set_playerbio($self, $player);
 	
 }
 
