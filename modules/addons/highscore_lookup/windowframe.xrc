@@ -10,6 +10,55 @@
 			<object class="wxBoxSizer">
 				<orient>wxVERTICAL</orient>
 				<object class="sizeritem">
+					<option>0</option>
+					<flag>wxALL|wxEXPAND</flag>
+					<border>5</border>
+					<object class="wxBoxSizer">
+						<orient>wxHORIZONTAL</orient>
+						<object class="sizeritem">
+							<option>1</option>
+							<flag>wxEXPAND</flag>
+							<border>5</border>
+							<object class="wxFlexGridSizer">
+								<rows>1</rows>
+								<cols>3</cols>
+								<vgap>0</vgap>
+								<hgap>0</hgap>
+								<growablecols>1</growablecols>
+								<growablerows></growablerows>
+								<object class="sizeritem">
+									<option>0</option>
+									<flag>wxALIGN_CENTER|wxALL</flag>
+									<border>5</border>
+									<object class="wxStaticText" name="m_staticText2">
+										<label>Player:</label>
+										<wrap>-1</wrap>
+									</object>
+								</object>
+								<object class="sizeritem">
+									<option>1</option>
+									<flag>wxALL|wxEXPAND</flag>
+									<border>5</border>
+									<object class="wxTextCtrl" name="name">
+										<style>wxTE_CENTRE|wxTE_PROCESS_ENTER</style>
+										<value></value>
+										<maxlength>0</maxlength>
+									</object>
+								</object>
+								<object class="sizeritem">
+									<option>1</option>
+									<flag>wxALIGN_CENTER|wxALL|wxEXPAND</flag>
+									<border>5</border>
+									<object class="wxButton" name="lookup">
+										<label>Lookup Player</label>
+										<default>0</default>
+									</object>
+								</object>
+							</object>
+						</object>
+					</object>
+				</object>
+				<object class="sizeritem">
 					<option>1</option>
 					<flag>wxEXPAND | wxALL</flag>
 					<border>5</border>
@@ -1329,55 +1378,6 @@
 												</object>
 											</object>
 										</object>
-									</object>
-								</object>
-							</object>
-						</object>
-					</object>
-				</object>
-				<object class="sizeritem">
-					<option>0</option>
-					<flag>wxALL|wxEXPAND</flag>
-					<border>5</border>
-					<object class="wxBoxSizer">
-						<orient>wxHORIZONTAL</orient>
-						<object class="sizeritem">
-							<option>1</option>
-							<flag>wxEXPAND</flag>
-							<border>5</border>
-							<object class="wxFlexGridSizer">
-								<rows>1</rows>
-								<cols>3</cols>
-								<vgap>0</vgap>
-								<hgap>0</hgap>
-								<growablecols>1</growablecols>
-								<growablerows></growablerows>
-								<object class="sizeritem">
-									<option>0</option>
-									<flag>wxALIGN_CENTER|wxALL</flag>
-									<border>5</border>
-									<object class="wxStaticText" name="m_staticText2">
-										<label>Player:</label>
-										<wrap>-1</wrap>
-									</object>
-								</object>
-								<object class="sizeritem">
-									<option>1</option>
-									<flag>wxALL|wxEXPAND</flag>
-									<border>5</border>
-									<object class="wxTextCtrl" name="name">
-										<style>wxTE_CENTRE|wxTE_PROCESS_ENTER</style>
-										<value></value>
-										<maxlength>0</maxlength>
-									</object>
-								</object>
-								<object class="sizeritem">
-									<option>1</option>
-									<flag>wxALIGN_CENTER|wxALL|wxEXPAND</flag>
-									<border>5</border>
-									<object class="wxButton" name="lookup">
-										<label>Lookup Player</label>
-										<default>0</default>
 									</object>
 								</object>
 							</object>
