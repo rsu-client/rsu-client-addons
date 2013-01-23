@@ -70,7 +70,7 @@
 														<flag>wxALL|wxEXPAND</flag>
 														<border>5</border>
 														<object class="wxStaticText" name="playerinfo">
-															<label>Name:\nTitle:                         \nMember:\n</label>
+															<label>Name:\nTitle:\nMember:\n</label>
 															<wrap>-1</wrap>
 														</object>
 													</object>
@@ -108,10 +108,10 @@
 														<hgap>0</hgap>
 														<object class="sizeritem">
 															<option>0</option>
-															<flag>wxALL</flag>
+															<flag>wxALL|wxEXPAND</flag>
 															<border>5</border>
 															<object class="wxStaticText" name="recentactivity">
-																<label>Not Available</label>
+																<label></label>
 																<wrap>485</wrap>
 															</object>
 														</object>
