@@ -18,7 +18,7 @@ use Encode::Byte;
 # Load the runescape script inside this loader 
 #(if this loader is packaged with PAR::Packer this 
 #will let the perl script run inside the compressed perl)
-require "$FindBin::RealBin/highscore_viewer";
+require "$FindBin::RealBin/player_lookup";
 
 # Exit the script when done
 exit

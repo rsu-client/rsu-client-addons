@@ -3,7 +3,7 @@
 	<object class="wxFrame" name="mainwindow">
 		<style>wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL</style>
 		<size>438,463</size>
-		<title>Highscore Lookup</title>
+		<title>Player Lookup</title>
 		<aui_managed>0</aui_managed>
 		<object class="wxPanel" name="mainpanel">
 			<style>wxTAB_TRAVERSAL</style>
@@ -36,7 +36,7 @@
 												<flag>wxALIGN_CENTER|wxALL</flag>
 												<border>5</border>
 												<object class="wxStaticBitmap" name="chathead">
-													<bitmap>/home/hk/devel/git/rsu-client-addons/modules/addons/Highscore_lookup/bitmaps/default_chat.png</bitmap>
+													<bitmap>bitmaps/default_chat.png</bitmap>
 												</object>
 											</object>
 											<object class="sizeritem">
@@ -44,7 +44,7 @@
 												<flag>wxALIGN_CENTER|wxALL</flag>
 												<border>5</border>
 												<object class="wxStaticBitmap" name="fullavatar">
-													<bitmap>/home/hk/devel/git/rsu-client-addons/modules/addons/Highscore_lookup/bitmaps/default_full.png</bitmap>
+													<bitmap>bitmaps/default_full.png</bitmap>
 												</object>
 											</object>
 										</object>
@@ -67,16 +67,16 @@
 													<hgap>0</hgap>
 													<object class="sizeritem">
 														<option>0</option>
-														<flag>wxALL</flag>
+														<flag>wxALL|wxEXPAND</flag>
 														<border>5</border>
 														<object class="wxStaticText" name="playerinfo">
-															<label>Name:\nTitle:\nMember:</label>
+															<label>Name:\nTitle:                         \nMember:\n</label>
 															<wrap>-1</wrap>
 														</object>
 													</object>
 													<object class="sizeritem">
 														<option>0</option>
-														<flag>wxALL</flag>
+														<flag>wxALL|wxEXPAND</flag>
 														<border>5</border>
 														<object class="wxStaticText" name="claninfo">
 															<label>Clan:</label>

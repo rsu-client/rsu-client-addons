@@ -4,7 +4,7 @@
 use strict;
 
 # Name of module
-my $modulename = "highscore_viewer";
+my $modulename = "player_lookup";
 
 # Use FindBin module to get script directory
 use FindBin;
