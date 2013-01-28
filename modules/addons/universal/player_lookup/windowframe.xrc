@@ -184,7 +184,7 @@
 									<vgap>0</vgap>
 									<hgap>0</hgap>
 									<object class="sizeritem">
-										<option>0</option>
+										<option>1</option>
 										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<object class="wxStaticBoxSizer">
@@ -230,7 +230,7 @@
 										</object>
 									</object>
 									<object class="sizeritem">
-										<option>0</option>
+										<option>1</option>
 										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<object class="wxStaticBoxSizer">
@@ -276,7 +276,7 @@
 										</object>
 									</object>
 									<object class="sizeritem">
-										<option>0</option>
+										<option>1</option>
 										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<object class="wxStaticBoxSizer">
@@ -322,7 +322,7 @@
 										</object>
 									</object>
 									<object class="sizeritem">
-										<option>0</option>
+										<option>1</option>
 										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<object class="wxStaticBoxSizer">
@@ -368,7 +368,7 @@
 										</object>
 									</object>
 									<object class="sizeritem">
-										<option>0</option>
+										<option>1</option>
 										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<object class="wxStaticBoxSizer">
@@ -414,7 +414,7 @@
 										</object>
 									</object>
 									<object class="sizeritem">
-										<option>0</option>
+										<option>1</option>
 										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<object class="wxStaticBoxSizer">
@@ -460,7 +460,7 @@
 										</object>
 									</object>
 									<object class="sizeritem">
-										<option>0</option>
+										<option>1</option>
 										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<object class="wxStaticBoxSizer">
@@ -506,7 +506,7 @@
 										</object>
 									</object>
 									<object class="sizeritem">
-										<option>0</option>
+										<option>1</option>
 										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<object class="wxStaticBoxSizer">
@@ -552,7 +552,7 @@
 										</object>
 									</object>
 									<object class="sizeritem">
-										<option>0</option>
+										<option>1</option>
 										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<object class="wxStaticBoxSizer">
@@ -598,7 +598,7 @@
 										</object>
 									</object>
 									<object class="sizeritem">
-										<option>0</option>
+										<option>1</option>
 										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<object class="wxStaticBoxSizer">
@@ -644,7 +644,7 @@
 										</object>
 									</object>
 									<object class="sizeritem">
-										<option>0</option>
+										<option>1</option>
 										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<object class="wxStaticBoxSizer">
@@ -690,7 +690,7 @@
 										</object>
 									</object>
 									<object class="sizeritem">
-										<option>0</option>
+										<option>1</option>
 										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<object class="wxStaticBoxSizer">
@@ -736,7 +736,7 @@
 										</object>
 									</object>
 									<object class="sizeritem">
-										<option>0</option>
+										<option>1</option>
 										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<object class="wxStaticBoxSizer">
@@ -782,7 +782,7 @@
 										</object>
 									</object>
 									<object class="sizeritem">
-										<option>0</option>
+										<option>1</option>
 										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<object class="wxStaticBoxSizer">
@@ -828,7 +828,7 @@
 										</object>
 									</object>
 									<object class="sizeritem">
-										<option>0</option>
+										<option>1</option>
 										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<object class="wxStaticBoxSizer">
@@ -874,7 +874,7 @@
 										</object>
 									</object>
 									<object class="sizeritem">
-										<option>0</option>
+										<option>1</option>
 										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<object class="wxStaticBoxSizer">
@@ -920,7 +920,7 @@
 										</object>
 									</object>
 									<object class="sizeritem">
-										<option>0</option>
+										<option>1</option>
 										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<object class="wxStaticBoxSizer">
@@ -966,7 +966,7 @@
 										</object>
 									</object>
 									<object class="sizeritem">
-										<option>0</option>
+										<option>1</option>
 										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<object class="wxStaticBoxSizer">
@@ -1012,7 +1012,7 @@
 										</object>
 									</object>
 									<object class="sizeritem">
-										<option>0</option>
+										<option>1</option>
 										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<object class="wxStaticBoxSizer">
@@ -1058,7 +1058,7 @@
 										</object>
 									</object>
 									<object class="sizeritem">
-										<option>0</option>
+										<option>1</option>
 										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<object class="wxStaticBoxSizer">
@@ -1104,7 +1104,7 @@
 										</object>
 									</object>
 									<object class="sizeritem">
-										<option>0</option>
+										<option>1</option>
 										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<object class="wxStaticBoxSizer">
@@ -1150,7 +1150,7 @@
 										</object>
 									</object>
 									<object class="sizeritem">
-										<option>0</option>
+										<option>1</option>
 										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<object class="wxStaticBoxSizer">
@@ -1196,7 +1196,7 @@
 										</object>
 									</object>
 									<object class="sizeritem">
-										<option>0</option>
+										<option>1</option>
 										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<object class="wxStaticBoxSizer">
@@ -1242,7 +1242,7 @@
 										</object>
 									</object>
 									<object class="sizeritem">
-										<option>0</option>
+										<option>1</option>
 										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<object class="wxStaticBoxSizer">
@@ -1288,7 +1288,7 @@
 										</object>
 									</object>
 									<object class="sizeritem">
-										<option>0</option>
+										<option>1</option>
 										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<object class="wxStaticBoxSizer">
@@ -1334,7 +1334,7 @@
 										</object>
 									</object>
 									<object class="sizeritem">
-										<option>0</option>
+										<option>1</option>
 										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<object class="wxStaticBoxSizer">
