@@ -214,11 +214,11 @@ sub set_layout
 	$self->{fullavatar} = $self->FindWindow('fullavatar');
 	
 	# Set default size
-	$self->SetSize(490,520);
+	$self->SetSize(500,530);
 	
 	# Make sure the window cannot be resized smaller
 	$self->SetMinSize($self->GetSize);
-	#$self->SetMaxSize($self->GetSize);
+	$self->SetMaxSize($self->GetSize);
 	
 	# Set the layout
 	$self->Layout;
@@ -300,9 +300,9 @@ sub setScrollBars
 	my @scrolledWindows = @_;
 	
 	# Set scroll properties
-	my $pixelsPerUnitX = 15; 
+	my $pixelsPerUnitX = 0;#15; 
     my $pixelsPerUnitY = 15; 
-    my $noUnitsX = 100; 
+    my $noUnitsX = 0;#100; 
     my $noUnitsY = 100; 
 	
 	# For each widget to make scrollable
@@ -552,12 +552,19 @@ sub fetchstats
 					# Set the info into the level and rank labels of the skill
 					$self->{$skillnames[$counter]."stats"}->SetLabel("Level: $skilldata[1]\nRank: $skilldata[0]\nXP:     $skilldata[2]");
 				}
+				# Else if we are on mac osx
+				elsif ($OS =~ /darwin/)
+				{
+					# Set the info into the level and rank labels of the skill
+					$self->{$skillnames[$counter]."stats"}->SetLabel("Level:\t$skilldata[1]\nRank:\t$skilldata[0]\nXP:      $skilldata[2]");
+				}
 				# Else
 				else
 				{
 					# Set the info into the level and rank labels of the skill
 					$self->{$skillnames[$counter]."stats"}->SetLabel("Level:\t$skilldata[1]\nRank:\t$skilldata[0]\nXP:\t\t$skilldata[2]");
 				}
+				
 			}
 			# Else
 			else
@@ -568,6 +575,13 @@ sub fetchstats
 					# Set the info as Not Available
 					$self->{$skillnames[$counter]."stats"}->SetLabel("Level: N/A\nRank: N/A\nXP:     N/A");
 				}
+				# Else if we are on mac osx
+				elsif($OS =~ /darwin/)
+				{
+					# Set the info as Not Available
+					$self->{$skillnames[$counter]."stats"}->SetLabel("Level:\tN/A\nRank:\tN/A\nXP:      N/A");
+				}
+				
 				# Else
 				else
 				{
