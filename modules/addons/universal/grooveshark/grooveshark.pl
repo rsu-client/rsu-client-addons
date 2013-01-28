@@ -42,14 +42,18 @@ if ("@ARGV" =~ /(-|--)scriptpath=/)
 	if ($cwd =~ /^(\/usr\/s?bin|\/opt\/runescape|\/usr\/local\/s?bin)/)
 	{
 		# Change the $cwd to $HOME/.config/runescape/modules/addons/universal/player_lookup
-		$cwd = $ENV{"HOME"}."/.config/runescape/modules/addons/universal/player_lookup";		
+		$cwd = $ENV{"HOME"}."/.config/runescape/modules/addons/universal/grooveshark";		
+	}
+	elsif ($OS =~ /MSWin32/)
+	{
+		# Set the $cwd to $cwd."/modules/addons/universal/player_lookup"
+		$cwd = $cwd."/modules/addons/universal/grooveshark"
 	}
 	else
 	{
 		# Set the $cwd to $cwd."/modules/addons/universal/player_lookup"
-		$cwd = $cwd."/modules/addons/universal/player_lookup"
+		$cwd = $cwd."/../../../modules/addons/universal/grooveshark"
 	}
-	
 }
 
 #---------------------------------------- *** ----------------------------------------

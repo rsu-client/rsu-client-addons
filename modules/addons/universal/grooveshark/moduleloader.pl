@@ -12,6 +12,7 @@ BEGIN
 	# Use lib to add 2 library paths to @INC which is the 2 possible locations of the RSUModule::Loader
 	use lib $ENV{"HOME"}."/.config/runescape/modules/addons/universal/framework/";
 	use lib $FindBin::RealBin."/modules/addons/universal/framework/";
+	use lib $FindBin::RealBin."/../../../modules/addons/universal/framework/";
 	
 	# Use the RSUModule::Loader which contain functions for launching addons and stuff like that
 	use RSUModule::Loader;
@@ -48,5 +49,18 @@ BEGIN
 # Display a messagebox to the user, for more info please consult the wxwidgets documentation on
 # http://docs.wxwidgets.org
 ###################
+# You can use "$^O" to detect the current operating system
+# Output = Platform
+# MSWin32 = Windows
+# linux = Linux
+# darwin = darwin or MacOSX
+###################
 
-RSUModule::Loader::wxperl_addon(RSUModule::Loader::universal_addondir("grooveshark")."/grooveshark.pl", "");
+if ("$^O" =~ /MSWin32/)
+{
+	Wx::MessageBox("Sorry but the universal addon \"Grooveshark\"\nworks only on MacOSX and Linux.", "Platform not compatible", wxOK);
+}
+else
+{
+	RSUModule::Loader::wxperl_addon(RSUModule::Loader::universal_addondir("grooveshark")."/grooveshark.pl", "");
+}

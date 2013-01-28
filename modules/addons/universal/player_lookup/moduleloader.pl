@@ -12,6 +12,7 @@ BEGIN
 	# Use lib to add 2 library paths to @INC which is the 2 possible locations of the RSUModule::Loader
 	use lib $ENV{"HOME"}."/.config/runescape/modules/addons/universal/framework/";
 	use lib $FindBin::RealBin."/modules/addons/universal/framework/";
+	use lib $FindBin::RealBin."/../../../modules/addons/universal/framework/";
 	
 	# Use the RSUModule::Loader which contain functions for launching addons and stuff like that
 	use RSUModule::Loader;

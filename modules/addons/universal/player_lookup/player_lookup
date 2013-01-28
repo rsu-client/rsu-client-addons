@@ -16,6 +16,7 @@ use FindBin;
 use lib $FindBin::RealBin."/modules";
 use lib $ENV{"HOME"}."/.config/runescape/modules/addons/universal/player_lookup/modules";
 use lib $FindBin::RealBin."/modules/addons/universal/player_lookup/modules";
+use lib $FindBin::RealBin."/../../../modules/addons/universal/player_lookup/modules";
 
 # Name of our xrc gui resource file
 my $xrc_gui_file = "windowframe.xrc";
@@ -55,12 +56,16 @@ if ("@ARGV" =~ /(-|--)scriptpath=/)
 		# Change the $cwd to $HOME/.config/runescape/modules/addons/universal/player_lookup
 		$cwd = $ENV{"HOME"}."/.config/runescape/modules/addons/universal/player_lookup";		
 	}
-	else
+	elsif ($OS =~ /MSWin32/)
 	{
 		# Set the $cwd to $cwd."/modules/addons/universal/player_lookup"
 		$cwd = $cwd."/modules/addons/universal/player_lookup"
 	}
-	
+	else
+	{
+		# Set the $cwd to $cwd."/modules/addons/universal/player_lookup"
+		$cwd = $cwd."/../../../modules/addons/universal/player_lookup"
+	}
 }
 
 
