@@ -49,5 +49,11 @@ BEGIN
 # Display a messagebox to the user, for more info please consult the wxwidgets documentation on
 # http://docs.wxwidgets.org
 ###################
+# You can use "$^O" to detect the current operating system
+# Output = Platform
+# MSWin32 = Windows
+# linux = Linux
+# darwin = darwin or MacOSX
+###################
 
 RSUModule::Loader::wxperl_addon(RSUModule::Loader::universal_addondir("player_lookup")."/player_lookup", "");
