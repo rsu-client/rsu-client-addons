@@ -12,7 +12,7 @@ sub clientdir
 	my $clientdir = $FindBin::RealBin;
 	
 	# If this script have a working directory in a system path
-	if ($clientdir =~ /^(\/usr\/s?bin|\/opt\/runescape|\/usr\/local\/s?bin)/)
+	if ($clientdir =~ /^(\/usr\/s?bin|\/opt\/|\/usr\/local\/s?bin)/)
 	{
 		# Change the clientdir to $HOME/.config/runescape
 		$clientdir = $ENV{"HOME"}."/.config/runescape";		

@@ -39,7 +39,7 @@ else
 if ("@ARGV" =~ /(-|--)scriptpath=/)
 {
 	# If this script have a working directory in a system path
-	if ($cwd =~ /^(\/usr\/s?bin|\/opt\/runescape|\/usr\/local\/s?bin)/)
+	if ($cwd =~ /^(\/usr\/s?bin|\/opt\/|\/usr\/local\/s?bin)/)
 	{
 		# Change the $cwd to $HOME/.config/runescape/modules/addons/universal/player_lookup
 		$cwd = $ENV{"HOME"}."/.config/runescape/modules/addons/universal/grooveshark";		
