@@ -213,6 +213,9 @@ sub set_layout
 	# Get the fullavatar bitmap widget
 	$self->{fullavatar} = $self->FindWindow('fullavatar');
 	
+	# Set the icon for the window
+	$self->SetIcon(Wx::Icon->new("$cwd/bitmaps/default_chat.png", wxBITMAP_TYPE_PNG));
+	
 	# Set default size
 	$self->SetSize(500,530);
 	

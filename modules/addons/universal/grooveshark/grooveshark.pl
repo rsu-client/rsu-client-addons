@@ -155,6 +155,9 @@ sub set_events
 	$self->{mainsizer}->Add($self->{musicplayer},1,wxEXPAND|wxALL,0);
 	$self->{musicsizer}->Add($self->{webview},1,wxEXPAND|wxALL,0);
 	
+	# Set the icon for the window
+	$self->SetIcon(Wx::Icon->new("$cwd/bitmaps/grooveshark.png", wxBITMAP_TYPE_PNG));
+	
 	# Add the sizer to the layout
 	$self->{musicplayer}->SetSizer( $self->{musicsizer} );
 	$self->SetSizer( $self->{mainsizer} );
