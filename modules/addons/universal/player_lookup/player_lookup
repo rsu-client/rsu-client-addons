@@ -318,6 +318,14 @@ sub setScrollBars
     my $pixelsPerUnitY = 15; 
     my $noUnitsX = 0;#100; 
     my $noUnitsY = 100; 
+    
+    # If we are on windows
+    if ($OS =~ /MSWin32/)
+	{
+		# Add information about scrolling the X axis
+		$pixelsPerUnitX = 15;
+		$noUnitsX = 100; 
+	}
 	
 	# For each widget to make scrollable
 	foreach my $window (@scrolledWindows)
