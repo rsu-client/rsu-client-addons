@@ -12,11 +12,11 @@ my $skillcount = 25;
 # Use FindBin module to get script directory
 use FindBin;
 
-# Add the folders with custom modules to the @INC
-use lib $FindBin::RealBin."/modules";
-use lib $ENV{"HOME"}."/.config/runescape/modules/addons/universal/player_lookup/modules";
-use lib $FindBin::RealBin."/modules/addons/universal/player_lookup/modules";
-use lib $FindBin::RealBin."/../../../modules/addons/universal/player_lookup/modules";
+# Use the Cwd module to get the current working directory
+use Cwd;
+
+# Get the cwd
+my $cwd = getcwd;
 
 # Name of our xrc gui resource file
 my $xrc_gui_file = "windowframe.xrc";
@@ -25,9 +25,21 @@ my $xrc_gui_file = "windowframe.xrc";
 $|=1;
 
 # Get script directory
-my $cwd = $FindBin::RealBin;
+my $scriptdir = $FindBin::RealBin;
 # Get script filename
 my $scriptname = $FindBin::Script;
+
+# The below if, checks if the script is running in standalone mode or addon mode
+# If the scriptname is player_lookup then
+if ($scriptname =~ /^(player_lookup|script_loader)$/)
+{
+	# Add the universal addons directory to the include path
+	unshift @INC, "$scriptdir/modules";
+	
+	# Use the scriptdir as cwd
+	$cwd = $scriptdir;
+}
+
 # Detect the current OS
 my $OS = "$^O";
 
@@ -86,8 +98,7 @@ use base qw(Wx::Frame Wx::ScrolledWindow);
 use LWP::Simple;
 
 # Use an xml/rss parser for the recent player activity
-use XML::RSSLite;
-
+eval "use XML::RSSLite"; die "Cannot load XML::RSSLite\n" if $@;
 
 sub new
 {
@@ -640,3 +651,4 @@ package main;
 my $app = application->new;
 $app->MainLoop;
 
+1;
