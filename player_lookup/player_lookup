@@ -472,6 +472,8 @@ sub set_recent_activity
 	
 	# Fix some stuff in the finished activity list
 	$activity =~ s/(&#8217;|&APOS;)/'/gi;
+	$activity =~ s/(&#8211;)/-/gi;
+	$activity =~ s/(&#13;|&#10;|&#9;)//gi;
 	
 	# Add the recent activity to the window
 	$self->{recentactivity}->SetLabel($activity);
