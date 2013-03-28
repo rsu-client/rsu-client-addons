@@ -65,7 +65,7 @@ eval "use Wx::WebView"; $webview_supported = 0 if $@;
 if ($webview_supported ne '1')
 {
 	# Tell the user that the module is unable to run
-	Wx::MessageBox("Error!\nUnable to load Wx::WebView, this could\nmean that your perl is not using WxWidgets2.9\nSadly that means this addon is not able to run on your system :(", "Error - Missing Module", wxOK);
+	Wx::MessageBox("Error!\nUnable to load Wx::WebView, this could mean that\nyour perl is not using WxWidgets2.9\nSadly that means this addon is not able to run on your system :(", "Error - Missing Module", wxOK);
 }
 # Else
 else
