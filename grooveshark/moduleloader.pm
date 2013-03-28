@@ -11,11 +11,14 @@ my $cwd = getcwd;
 # Use the addons framework which will provide access to some useful functions
 use addon::framework;
 
+# Use the Wx module
+use Wx;
+
 # Make a variable to contain the info if Wx is loaded or not
-my $Wx_Loaded = 1;
+my $webview_supported = 1;
 	
 # Try to use Wx, if it fails then die with the message that Wx is not installed
-eval "use Wx"; $Wx_Loaded = 0 if $@;
+eval "use Wx::WebView"; $webview_supported = 0 if $@;
 
 ###############
 ## Functions ##
@@ -58,8 +61,18 @@ eval "use Wx"; $Wx_Loaded = 0 if $@;
 # run "rsu-query help" or "rsu-query.exe help" for more information
 ###################
 
-# Require the actual addon
-require "$cwd/grooveshark";
+# If webview is not supported
+if ($webview_supported ne '1')
+{
+	# Tell the user that the module is unable to run
+	Wx::MessageBox("Error!\nUnable to load Wx::WebView, this could\nmean that your perl is not using WxWidgets2.9\nSadly that means this addon is not able to run on your system :(", "Error - Missing Module", wxOK);
+}
+# Else
+else
+{
+	# Require the actual addon
+	require "$cwd/grooveshark";
+}
 
 # Every package must return true (1)
 1;
