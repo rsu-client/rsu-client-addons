@@ -228,11 +228,11 @@ sub set_layout
 	$self->SetIcon(Wx::Icon->new("$cwd/bitmaps/default_chat.png", wxBITMAP_TYPE_PNG));
 	
 	# Set default size
-	$self->SetSize(500,530);
+	$self->SetSize(580,530);
 	
 	# Make sure the window cannot be resized smaller
 	$self->SetMinSize($self->GetSize);
-	$self->SetMaxSize(Wx::Size->new(500,9999));
+	#$self->SetMaxSize(Wx::Size->new(500,9999));
 	
 	# Set the layout
 	$self->Layout;
