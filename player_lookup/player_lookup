@@ -232,7 +232,7 @@ sub set_layout
 	
 	# Make sure the window cannot be resized smaller
 	$self->SetMinSize($self->GetSize);
-	$self->SetMaxSize($self->GetSize);
+	$self->SetMaxSize(Wx::Size->new(500,9999));
 	
 	# Set the layout
 	$self->Layout;
