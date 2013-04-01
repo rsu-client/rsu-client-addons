@@ -95,7 +95,7 @@ use Wx::Event qw(EVT_BUTTON EVT_TEXT_ENTER);
 use base qw(Wx::Frame Wx::ScrolledWindow);
 
 # Use LWP::Simple module to get website content (crossplatform)
-use LWP::Simple;
+eval "use LWP::Simple";
 
 # Use an xml/rss parser for the recent player activity
 eval "use XML::RSSLite"; die "Cannot load XML::RSSLite\n" if $@;
@@ -255,7 +255,10 @@ sub lookup_player
 	# If playername is not empty
 	if ($playername !~ /^$/)
 	{
+		# Fetch the players stats
 		fetchstats($self, $playername);
+		
+		# Fetch the players data
 		fetchplayerdata($self, $playername);
 	}
 	
@@ -357,9 +360,23 @@ sub set_avatar
 	# Get the passed parameters
 	my ($self, $player) = @_;
 	
-	# Fetch the chathead and full avatar from runescape.com
-	getstore("http://services.runescape.com/m=avatar-rs/$player/chat.png", "$cwd/bitmaps/chat_tmp.png");
-	getstore("http://services.runescape.com/m=avatar-rs/$player/full.png", "$cwd/bitmaps/full_tmp.png");	
+	# If we are running as a standalone application
+	if ($scriptname =~ /^(player_lookup|script_loader)$/)
+	{
+		# Fetch the chathead and full avatar from runescape.com
+		getstore("http://services.runescape.com/m=avatar-rs/$player/chat.png", "$cwd/bitmaps/chat_tmp.png");
+		getstore("http://services.runescape.com/m=avatar-rs/$player/full.png", "$cwd/bitmaps/full_tmp.png");
+	}
+	# Else we will use api calls
+	else
+	{
+		# Require the sysdload module
+		require updater::download::sysdload;
+		
+		# Download the chathead and full avatar from runescape.com
+		updater::download::sysdload::sysdownload("http://services.runescape.com/m=avatar-rs/$player/chat.png", "$cwd/bitmaps/chat_tmp.png");
+		updater::download::sysdload::sysdownload("http://services.runescape.com/m=avatar-rs/$player/full.png", "$cwd/bitmaps/full_tmp.png");
+	}
 	
 	# Load the downloaded chathead into the window
 	$self->{chathead}->SetBitmap(Wx::Bitmap->new("$cwd/bitmaps/chat_tmp.png", wxBITMAP_TYPE_PNG));
@@ -438,7 +455,7 @@ sub set_recent_activity
 	my ($self, $player) = @_;
 	
 	# Fetch the recent activity rss feed
-	my $rssfeed = get("http://services.runescape.com/m=adventurers-log/rssfeed?searchName=$player");
+	my $rssfeed = readurl("http://services.runescape.com/m=adventurers-log/rssfeed?searchName=$player");
 	
 	# Make a hash reference for the RSSLite parser
 	my %recent_activity;
@@ -495,7 +512,7 @@ sub set_playerbio
 	my ($self, $player) = @_;
 	
 	# Fetch the player details
-	my $jquerystring = get('http://services.runescape.com/m=website-data/g=runescape/playerDetails.ws?names=["'.$player.'"]&callback=jQuery000000000000000_0000000000');
+	my $jquerystring = readurl('http://services.runescape.com/m=website-data/g=runescape/playerDetails.ws?names=["'.$player.'"]&callback=jQuery000000000000000_0000000000');
 	
 	# Remove unneeded parts of the output
 	$jquerystring =~ s/(jQuery000000000000000_0000000000\(\[\{|"|\}\]\);)//g;
@@ -522,6 +539,7 @@ sub fetchplayerdata
 	# Fetch the players display pictures and load them into the window
 	set_avatar($self, $player);
 	
+	# Fetch the players recent activity and info
 	set_playerbio($self, $player);
 	
 }
@@ -534,9 +552,12 @@ sub fetchstats
 {
 	# Get pointers
 	my ($self, $player) = @_;
+
+	# Make a variable to contain the highscores of a player
+	my $highscore;
 	
 	# Get the highscores info of a player
-	my $highscore = get("http://hiscore.runescape.com/index_lite.ws?player=$player");
+	$highscore = readurl("http://hiscore.runescape.com/index_lite.ws?player=$player");
 	
 	# Suppress "uninitialized string" warning if lookup failed
 	no warnings;
@@ -626,7 +647,61 @@ sub fetchstats
 			$self->{$skillnames[$counter]."stats"}->SetLabel("Level:\tN/A\nRank:\tN/A\nXP:\t\tN/A");
 		}
 	}
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+# Replica of updater::download::sysdload::get
+sub readurl
+{
+	# Get the passed data
+	my ($url) = @_;
 	
+	# Get the current OS
+	my $OS = "$^O";
+	
+	# Make a variable to contain the output
+	my $output;
+	
+	# If we are on Windows
+	if ($OS =~ /MSWin32/)
+	{
+		# Use LWP::Simple
+		eval "use LWP::Simple";
+		
+		# Get the content of $url
+		$output = get("$url");
+	}
+	# Else
+	else
+	{
+		# Make a variable which will contain the download command we will use
+		my $fetchcommand = "wget -q -O-";
+		
+		# If /usr/bin contains wget
+		if(`ls /usr/bin | grep wget` =~  /wget/)
+		{
+			# Use wget command to fetch files
+			$fetchcommand = "wget -q -O-";
+		}
+		# Else if /usr/bin contains curl
+		elsif(`ls /usr/bin | grep curl` =~  /curl/)
+		{
+			# Curl command equalent to the wget command to fetch files
+			$fetchcommand = "curl -L -#";
+		}
+		
+		# Read the contents of url
+		$output = `$fetchcommand '$url'`;
+		
+		# Remove any newlines
+		$output =~ s/(\n|\r|\r\n)$//g;
+	}
+	
+	# Return the content of $url
+	return $output;
 }
 
 #---------------------------------------- *** ----------------------------------------
