@@ -360,28 +360,46 @@ sub set_avatar
 	# Get the passed parameters
 	my ($self, $player) = @_;
 	
-	# If we are running as a standalone application
-	if ($scriptname =~ /^(player_lookup|script_loader)$/)
+	# Replace spaces in the players name with %20
+	$player =~ s/\s{1,1}/%20/g;
+	
+	# If player is not default_avatar
+	if ($player !~ /^default_avatar$/)
 	{
-		# Fetch the chathead and full avatar from runescape.com
-		getstore("http://services.runescape.com/m=avatar-rs/$player/chat.png", "$cwd/bitmaps/chat_tmp.png");
-		getstore("http://services.runescape.com/m=avatar-rs/$player/full.png", "$cwd/bitmaps/full_tmp.png");
+		# If we are running as a standalone application
+		if ($scriptname =~ /^(player_lookup|script_loader)$/)
+		{
+			# Fetch the chathead and full avatar from runescape.com
+			getstore("http://services.runescape.com/m=avatar-rs/$player/chat.png", "$cwd/bitmaps/chat_tmp.png");
+			getstore("http://services.runescape.com/m=avatar-rs/$player/full.png", "$cwd/bitmaps/full_tmp.png");
+		}
+		# Else we will use api calls
+		else
+		{
+			# Require the sysdload module
+			require updater::download::sysdload;
+			
+			# Download the chathead and full avatar from runescape.com
+			updater::download::sysdload::sysdownload("http://services.runescape.com/m=avatar-rs/$player/chat.png", "$cwd/bitmaps/chat_tmp.png");
+			updater::download::sysdload::sysdownload("http://services.runescape.com/m=avatar-rs/$player/full.png", "$cwd/bitmaps/full_tmp.png");
+		}
+		
+		# Load the downloaded chathead into the window
+		$self->{chathead}->SetBitmap(Wx::Bitmap->new("$cwd/bitmaps/chat_tmp.png", wxBITMAP_TYPE_PNG));
+		# Load the downloaded full avatar into the window
+		$self->{fullavatar}->SetBitmap(Wx::Bitmap->new("$cwd/bitmaps/full_tmp.png", wxBITMAP_TYPE_PNG));
 	}
-	# Else we will use api calls
 	else
 	{
-		# Require the sysdload module
-		require updater::download::sysdload;
-		
-		# Download the chathead and full avatar from runescape.com
-		updater::download::sysdload::sysdownload("http://services.runescape.com/m=avatar-rs/$player/chat.png", "$cwd/bitmaps/chat_tmp.png");
-		updater::download::sysdload::sysdownload("http://services.runescape.com/m=avatar-rs/$player/full.png", "$cwd/bitmaps/full_tmp.png");
+		# Load the downloaded chathead into the window
+		$self->{chathead}->SetBitmap(Wx::Bitmap->new("$cwd/bitmaps/default_chat.png", wxBITMAP_TYPE_PNG));
+		# Load the downloaded full avatar into the window
+		$self->{fullavatar}->SetBitmap(Wx::Bitmap->new("$cwd/bitmaps/default_full.png", wxBITMAP_TYPE_PNG));
 	}
 	
-	# Load the downloaded chathead into the window
-	$self->{chathead}->SetBitmap(Wx::Bitmap->new("$cwd/bitmaps/chat_tmp.png", wxBITMAP_TYPE_PNG));
-	# Load the downloaded full avatar into the window
-	$self->{fullavatar}->SetBitmap(Wx::Bitmap->new("$cwd/bitmaps/full_tmp.png", wxBITMAP_TYPE_PNG));
+	
+	
+	
 }
 
 #
@@ -536,8 +554,8 @@ sub fetchplayerdata
 	# Get the passed data
 	my ($self, $player) = @_;
 	
-	# Fetch the players display pictures and load them into the window
-	set_avatar($self, $player);
+	## NOTE: set_avatar() call have been moved into fetchstats() as
+	## we can quickly detect if user is member or not when checking highscores
 	
 	# Fetch the players recent activity and info
 	set_playerbio($self, $player);
@@ -570,6 +588,14 @@ sub fetchstats
 		
 		# Set highscore to null
 		$highscore = '0';
+		
+		# Fetch the players display pictures and load them into the window
+		set_avatar($self, "default_avatar");
+	}
+	else
+	{
+		# Fetch the players display pictures and load them into the window
+		set_avatar($self, $player);
 	}
 
 	# Enable warnings again
@@ -680,6 +706,9 @@ sub readurl
 		# Make a variable which will contain the download command we will use
 		my $fetchcommand = "wget -q -O-";
 		
+		# Replace spaces with %20
+		$url =~ s/\s/%20/g;
+		
 		# If /usr/bin contains wget
 		if(`ls /usr/bin | grep wget` =~  /wget/)
 		{
@@ -690,7 +719,7 @@ sub readurl
 		elsif(`ls /usr/bin | grep curl` =~  /curl/)
 		{
 			# Curl command equalent to the wget command to fetch files
-			$fetchcommand = "curl -L -#";
+			$fetchcommand = "curl -s -g -L";
 		}
 		
 		# Read the contents of url
