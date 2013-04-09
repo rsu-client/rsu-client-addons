@@ -396,10 +396,6 @@ sub set_avatar
 		# Load the downloaded full avatar into the window
 		$self->{fullavatar}->SetBitmap(Wx::Bitmap->new("$cwd/bitmaps/default_full.png", wxBITMAP_TYPE_PNG));
 	}
-	
-	
-	
-	
 }
 
 #
@@ -617,6 +613,11 @@ sub fetchstats
 			# If skill is ranked
 			if ($skilldata[0] !~ /-1/)
 			{
+				# Make numbers more readable (by ivanpu)
+				$skilldata[0] = commify($skilldata[0]);
+				$skilldata[2] = commify($skilldata[2]);
+				print "$skilldata[0]\n";
+				
 				# If we are on windows
 				if ($OS =~ /MSWin32/)
 				{
@@ -673,6 +674,22 @@ sub fetchstats
 			$self->{$skillnames[$counter]."stats"}->SetLabel("Level:\tN/A\nRank:\tN/A\nXP:\t\tN/A");
 		}
 	}
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+# Method by ivanpu to make the numbers more readable
+sub commify {
+	# Get the passed data
+	local $_  = shift;
+	
+	# Make higher values easier to read by adding commas
+	1 while s/^(-?\d+)(\d{3})/$1,$2/;
+	
+	# Return the improved number
+	return $_;
 }
 
 #
