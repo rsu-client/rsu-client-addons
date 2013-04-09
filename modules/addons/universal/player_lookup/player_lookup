@@ -568,6 +568,10 @@ sub fetchstats
 			# If skill is ranked
 			if ($skilldata[0] !~ /-1/)
 			{
+				# make numbers more readable
+				$skilldata[0] = commify($skilldata[0]);
+				$skilldata[2] = commify($skilldata[2]);
+				
 				# If we are on windows
 				if ($OS =~ /MSWin32/)
 				{
@@ -626,6 +630,17 @@ sub fetchstats
 	}
 	
 }
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+sub commify {
+	local $_  = shift;
+	1 while s/^(-?\d+)(\d{3})/$1,$2/;
+	return $_;
+}
+
 
 #---------------------------------------- *** ----------------------------------------
 #---------------------------------------- *** ----------------------------------------
