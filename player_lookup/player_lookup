@@ -360,14 +360,11 @@ sub set_avatar
 	# Get the passed parameters
 	my ($self, $player) = @_;
 	
-	# Replace spaces in the players name with %20
-	$player =~ s/\s{1,1}/%20/g;
-	
 	# If player is not default_avatar
 	if ($player !~ /^default_avatar$/)
 	{
 		# If we are running as a standalone application
-		if ($scriptname =~ /^(player_lookup|script_loader)$/)
+		if ("@INC" =~ /par-/)
 		{
 			# Fetch the chathead and full avatar from runescape.com
 			getstore("http://services.runescape.com/m=avatar-rs/$player/chat.png", "$cwd/bitmaps/chat_tmp.png");
@@ -378,6 +375,9 @@ sub set_avatar
 		{
 			# Require the sysdload module
 			require updater::download::sysdload;
+			
+			# Replace spaces in the players name with %20
+			$player =~ s/\s{1,1}/%20/g;
 			
 			# Download the chathead and full avatar from runescape.com
 			updater::download::sysdload::sysdownload("http://services.runescape.com/m=avatar-rs/$player/chat.png", "$cwd/bitmaps/chat_tmp.png");
