@@ -28,7 +28,7 @@ my $scriptname = $FindBin::Script;
 if ($scriptname =~ /^(player_lookup|script_loader)$/)
 {
 	# Add the universal addons directory to the include path
-	unshift @INC, "$scriptdir/modules";
+	unshift @INC, "$scriptdir/lib";
 	
 	# Use the scriptdir as cwd
 	$cwd = $scriptdir;
@@ -93,6 +93,9 @@ require lib::nobars;
 
 # Require the files::IO module
 require rsu::files::IO;
+
+# Require the files::clientdir module
+require rsu::files::clientdir;
 
 sub new
 {
@@ -164,6 +167,7 @@ sub set_events
 	# Setup the events
 	# EVT_BUTTON($self, Wx::XmlResource::GetXRCID('objectname'), \&function);
 	EVT_BUTTON($self, Wx::XmlResource::GetXRCID('btn_save'), \&saveconf);
+	EVT_BUTTON($self, Wx::XmlResource::GetXRCID('btn_defaults'), \&restore_defaults);
 	EVT_BUTTON($self, Wx::XmlResource::GetXRCID('btn_resize'), \&doresize);
 	
 	
@@ -192,6 +196,9 @@ sub set_layout
 	
 	# Set the icon for the window
 	#$self->SetIcon(Wx::Icon->new("$cwd/icon.png", wxBITMAP_TYPE_PNG));
+	
+	# Load the saved config
+	loadconfig($self);
 	
 	# Set default size
 	$self->SetSize(455,355);
@@ -283,19 +290,78 @@ sub setScrollBars
 #---------------------------------------- *** ----------------------------------------
 #
 
-sub doresize
+sub loadconfig
 {
 	# Get the passed data
-	my ($self, $event) = @_;
+	my ($self) = @_;
 	
-	# Run our external function
-	lib::nobars::remove_bars($self->{txt_x}->GetValue(),$self->{txt_y}->GetValue(),$self->{txt_width}->GetValue(),$self->{txt_height}->GetValue())
+	# Restore the default values
+	$self->{txt_x}->SetValue(rsu::files::IO::readconf("X_offset","-4","fullscreen_emu.conf"));
+	$self->{txt_y}->SetValue(rsu::files::IO::readconf("Y_offset","-45","fullscreen_emu.conf"));
+	$self->{txt_width}->SetValue(rsu::files::IO::readconf("W_offset","0","fullscreen_emu.conf"));
+	$self->{txt_height}->SetValue(rsu::files::IO::readconf("H_offset","36","fullscreen_emu.conf"));
 }
 
 #
 #---------------------------------------- *** ----------------------------------------
 #
 
+sub saveconf
+{
+	# Get the passed data
+	my ($self, $event) = @_;
+	
+	# Write the config
+	rsu::files::IO::WriteFile("X_offset=".$self->{txt_x}->GetValue(), ">>", rsu::files::clientdir::getclientdir()."/share/configs/fullscreen_emu.conf");
+	rsu::files::IO::WriteFile("Y_offset=".$self->{txt_y}->GetValue(), ">>", rsu::files::clientdir::getclientdir()."/share/configs/fullscreen_emu.conf");
+	rsu::files::IO::WriteFile("W_offset=".$self->{txt_width}->GetValue(), ">>", rsu::files::clientdir::getclientdir()."/share/configs/fullscreen_emu.conf");
+	rsu::files::IO::WriteFile("H_offset=".$self->{txt_height}->GetValue(), ">>", rsu::files::clientdir::getclientdir()."/share/configs/fullscreen_emu.conf");
+	
+	# Tell that everything is saved
+	Wx::MessageBox("Configuration saved to:\n".rsu::files::clientdir::getclientdir()."/share/configs/fullscreen_emu.conf", "Configuration Saved!", wxOK);
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+sub restore_defaults
+{
+	# Get the passed data
+	my ($self, $event) = @_;
+	
+	# Restore the default values
+	$self->{txt_x}->SetValue("-4");
+	$self->{txt_y}->SetValue("-45");
+	$self->{txt_width}->SetValue("0");
+	$self->{txt_height}->SetValue("36");
+	
+	# Tell that all values are restored
+	Wx::MessageBox("All values are now restored to default!\nClick the Save Config button to overwrite your config file.", "Configurations Restored!", wxOK);
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+sub doresize
+{
+	# Get the passed data
+	my ($self, $event) = @_;
+	
+	# Run our external function
+	my $run = lib::nobars::remove_bars($self->{txt_x}->GetValue(),$self->{txt_y}->GetValue(),$self->{txt_width}->GetValue(),$self->{txt_height}->GetValue());
+	
+	# If wmctrl did not run (not installed) then
+	if ($run eq '0')
+	{
+		Wx::MessageBox("Can't find wmctrl in /usr/bin\nWhich is needed to do the resizing.\nPlease install wmctrl from your Linux distributions Software Repository,\nthen click the button again. :)", "Command wmctrl not found!", wxOK);
+	}
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
 
 sub set_tooltips
 {
