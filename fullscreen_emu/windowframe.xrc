@@ -2,7 +2,7 @@
 <resource xmlns="http://www.wxwindows.org/wxxrc" version="2.3.0.1">
 	<object class="wxFrame" name="mainwindow">
 		<style>wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL</style>
-		<size>453,356</size>
+		<size>453,320</size>
 		<title>RSU Fullscreen Emulation</title>
 		<centered>1</centered>
 		<aui_managed>0</aui_managed>
@@ -27,15 +27,6 @@
 					<object class="wxStaticBoxSizer">
 						<orient>wxVERTICAL</orient>
 						<label>Window offset variables</label>
-						<object class="sizeritem">
-							<option>0</option>
-							<flag>wxALIGN_RIGHT|wxALL</flag>
-							<border>5</border>
-							<object class="wxButton" name="btn_help">
-								<label>Help! What is this nonsense!?</label>
-								<default>0</default>
-							</object>
-						</object>
 						<object class="sizeritem">
 							<option>1</option>
 							<flag>wxEXPAND</flag>
@@ -62,7 +53,7 @@
 									<border>5</border>
 									<object class="wxTextCtrl" name="txt_x">
 										<style>wxTE_CENTRE</style>
-										<value>-2</value>
+										<value>-4</value>
 									</object>
 								</object>
 								<object class="sizeritem">
@@ -129,7 +120,7 @@
 					<border>5</border>
 					<object class="wxGridSizer">
 						<rows>0</rows>
-						<cols>2</cols>
+						<cols>3</cols>
 						<vgap>0</vgap>
 						<hgap>0</hgap>
 						<object class="sizeritem">
@@ -138,6 +129,15 @@
 							<border>5</border>
 							<object class="wxButton" name="btn_save">
 								<label>Save config</label>
+								<default>0</default>
+							</object>
+						</object>
+						<object class="sizeritem">
+							<option>0</option>
+							<flag>wxALL</flag>
+							<border>5</border>
+							<object class="wxButton" name="btn_defaults">
+								<label>Restore Defaults</label>
 								<default>0</default>
 							</object>
 						</object>
