@@ -700,7 +700,7 @@ sub commify {
 sub readurl
 {
 	# Get the passed data
-	my ($url) = @_;
+	my ($url, $timeout) = @_;
 	
 	# Get the current OS
 	my $OS = "$^O";
@@ -712,10 +712,30 @@ sub readurl
 	if ($OS =~ /MSWin32/)
 	{
 		# Use LWP::Simple
-		eval "use LWP::Simple";
+		eval "use LWP::UserAgent";
+		
+		# Make a handle for LWP
+		my $lwp = LWP::UserAgent->new(ssl_opts => { verify_hostname => 0 });
+		
+		# Set the timeout
+		$lwp->timeout(5) if !defined $timeout;
+		$lwp->timeout($timeout) if defined $timeout;
 		
 		# Get the content of $url
-		$output = get("$url");
+		my $response = $lwp->get("$url");
+		
+		# If we successfully got the content
+		if ($response->is_success)
+		{
+			# Decode the content
+			$output = $response->decoded_content;
+		}
+		# Else
+		else
+		{
+			# Make output empty
+			$output = "";
+		}
 	}
 	# Else
 	else
@@ -723,27 +743,26 @@ sub readurl
 		# Make a variable which will contain the download command we will use
 		my $fetchcommand = "wget -q -O-";
 		
-		# Replace spaces with %20
-		$url =~ s/\s/%20/g;
-		
 		# If /usr/bin contains wget
 		if(`ls /usr/bin | grep wget` =~  /wget/)
 		{
 			# Use wget command to fetch files
-			$fetchcommand = "wget -q -O-";
+			$fetchcommand = "wget -q --connect-timeout=5 -O-" if !defined $timeout;
+			$fetchcommand = "wget -q --connect-timeout=$timeout --timeout=$timeout -O-" if defined $timeout;
 		}
 		# Else if /usr/bin contains curl
 		elsif(`ls /usr/bin | grep curl` =~  /curl/)
 		{
 			# Curl command equalent to the wget command to fetch files
-			$fetchcommand = "curl -s -g -L";
+			$fetchcommand = "curl -L --connect-timeout 5 -#" if !defined $timeout;
+			$fetchcommand = "curl -L --connect-timeout $timeout -m $timeout -#" if defined $timeout;
 		}
-		
+
 		# Read the contents of url
-		$output = `$fetchcommand '$url'`;
+		$output = `$fetchcommand $url`;
 		
 		# Remove any newlines
-		$output =~ s/(\n|\r|\r\n)$//g;
+		#$output =~ s/(\n|\r|\r\n)//g;
 	}
 	
 	# Return the content of $url
