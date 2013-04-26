@@ -718,7 +718,7 @@ sub readurl
 		my $lwp = LWP::UserAgent->new(ssl_opts => { verify_hostname => 0 });
 		
 		# Set the timeout
-		$lwp->timeout(5) if !defined $timeout;
+		$lwp->timeout(10) if !defined $timeout;
 		$lwp->timeout($timeout) if defined $timeout;
 		
 		# Get the content of $url
@@ -747,14 +747,14 @@ sub readurl
 		if(`ls /usr/bin | grep wget` =~  /wget/)
 		{
 			# Use wget command to fetch files
-			$fetchcommand = "wget -q --connect-timeout=5 -O-" if !defined $timeout;
+			$fetchcommand = "wget -q --connect-timeout=10 --timeout=10 -O-" if !defined $timeout;
 			$fetchcommand = "wget -q --connect-timeout=$timeout --timeout=$timeout -O-" if defined $timeout;
 		}
 		# Else if /usr/bin contains curl
 		elsif(`ls /usr/bin | grep curl` =~  /curl/)
 		{
 			# Curl command equalent to the wget command to fetch files
-			$fetchcommand = "curl -L --connect-timeout 5 -#" if !defined $timeout;
+			$fetchcommand = "curl -L --connect-timeout 10 -m 10 -#" if !defined $timeout;
 			$fetchcommand = "curl -L --connect-timeout $timeout -m $timeout -#" if defined $timeout;
 		}
 
@@ -762,7 +762,7 @@ sub readurl
 		$output = `$fetchcommand '$url'`;
 		
 		# Remove any newlines
-		$output =~ s/(\n|\r|\r\n)//g;
+		#$output =~ s/(\n|\r|\r\n)//g;
 	}
 	
 	# Return the content of $url
