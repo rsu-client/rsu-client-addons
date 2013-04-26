@@ -759,7 +759,7 @@ sub readurl
 		}
 
 		# Read the contents of url
-		$output = `$fetchcommand $url`;
+		$output = `$fetchcommand '$url'`;
 		
 		# Remove any newlines
 		$output =~ s/(\n|\r|\r\n)//g;
