@@ -754,8 +754,8 @@ sub readurl
 		elsif(`ls /usr/bin | grep curl` =~  /curl/)
 		{
 			# Curl command equalent to the wget command to fetch files
-			$fetchcommand = "curl -L --connect-timeout 20 -m 20 -#" if !defined $timeout;
-			$fetchcommand = "curl -L --connect-timeout $timeout -m $timeout -#" if defined $timeout;
+			$fetchcommand = "curl -g -L --connect-timeout 20 -m 20 -#" if !defined $timeout;
+			$fetchcommand = "curl -g -L --connect-timeout $timeout -m $timeout -#" if defined $timeout;
 		}
 
 		# Read the contents of url
