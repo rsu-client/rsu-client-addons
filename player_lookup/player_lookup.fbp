@@ -6187,7 +6187,7 @@
                                                     <property name="proportion">1</property>
                                                     <object class="wxStaticBoxSizer" expanded="1">
                                                         <property name="id">wxID_ANY</property>
-                                                        <property name="label">Total</property>
+                                                        <property name="label">Divination</property>
                                                         <property name="minimum_size"></property>
                                                         <property name="name">divination</property>
                                                         <property name="orient">wxVERTICAL</property>
