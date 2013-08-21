@@ -207,13 +207,19 @@ sub set_layout
 	foreach my $skill(@skillnames)
 	{
 		$self->{$skill."stats"} = $self->FindWindow($skill.'stats');
+        
+        if ($skill !~ /(Summoning|Dungeoneering|Divination)/)
+        {
+            $self->{$skill."stats07"} = $self->FindWindow($skill.'stats07');
+        }
 	}
 	
+    # Playerinfo and claninfo disabled until a way to fetch info is found
 	# Get the playerbio label
-	$self->{playerinfo} = $self->FindWindow('playerinfo');
+	#$self->{playerinfo} = $self->FindWindow('playerinfo');
 	
 	# Get the claninfo label
-	$self->{claninfo} = $self->FindWindow('claninfo');
+	#$self->{claninfo} = $self->FindWindow('claninfo');
 	
 	# Get the recentactivity label
 	$self->{recentactivity} = $self->FindWindow('recentactivity');
@@ -257,6 +263,9 @@ sub lookup_player
 	{
 		# Fetch the players stats
 		fetchstats($self, $playername);
+        
+        # Fetch the players stats
+		fetchstats07($self, $playername);
 		
 		# Fetch the players data
 		fetchplayerdata($self, $playername);
@@ -531,11 +540,12 @@ sub set_playerbio
 	# Remove unneeded parts of the output
 	$jquerystring =~ s/(jQuery000000000000000_0000000000\(\[\{|"|\}\]\);)//g;
 	
+    # Disabled until a player bio solution is found
 	# Parse and set the player claninfo
-	set_claninfo($self, $jquerystring);
+	#set_claninfo($self, $jquerystring);
 	
 	# Parse and set the playerbio info
-	set_playerinfo($self, $jquerystring);
+	#set_playerinfo($self, $jquerystring);
 	
 	# Parse the players recent activity and display it on the window
 	set_recent_activity($self,$player)
@@ -672,6 +682,116 @@ sub fetchstats
 		{	
 			# Set the info about the level, rank and xp label of the skill
 			$self->{$skillnames[$counter]."stats"}->SetLabel("Level:\tN/A\nRank:\tN/A\nXP:\t\tN/A");
+		}
+	}
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+sub fetchstats07
+{
+	# Get pointers
+	my ($self, $player) = @_;
+
+	# Make a variable to contain the highscores of a player
+	my $highscore;
+	
+	# Get the highscores info of a player
+	$highscore = readurl("http://services.runescape.com/m=hiscore_oldschool/index_lite.ws?player=$player");
+	
+	# Suppress "uninitialized string" warning if lookup failed
+	no warnings;
+	
+	# If $highscore is empty
+	if ($highscore eq '')
+	{
+		# Tell in console that we found nothing
+		print "Player do not exist or is F2P account\n\n";
+		
+		# Set highscore to null
+		$highscore = '0';
+	}
+
+	# Enable warnings again
+	use warnings;
+
+	# If fetching highscore data was successful
+	if ($highscore !~ /^0$/)
+	{
+		# Split the data by whitespace
+		my @playerdata = split /\s/, $highscore;
+		
+		# Make a for loop that goes through the highscores info
+		my $counter;
+		for ($counter = 0; $counter <= 23; $counter++)
+		{
+			# Split the playerdata by ,
+			my @skilldata  = split /,/, $playerdata[$counter];
+			
+			# If skill is ranked
+			if ($skilldata[0] !~ /-1/)
+			{
+				# Make numbers more readable (by ivanpu)
+				$skilldata[0] = commify($skilldata[0]);
+				$skilldata[2] = commify($skilldata[2]);
+				print "$skilldata[0]\n";
+				
+				# If we are on windows
+				if ($OS =~ /MSWin32/)
+				{
+					# Set the info into the level and rank labels of the skill
+					$self->{$skillnames[$counter]."stats07"}->SetLabel("Level: $skilldata[1]\nRank: $skilldata[0]\nXP:     $skilldata[2]");
+				}
+				# Else if we are on mac osx
+				elsif ($OS =~ /darwin/)
+				{
+					# Set the info into the level and rank labels of the skill
+					$self->{$skillnames[$counter]."stats07"}->SetLabel("Level:\t$skilldata[1]\nRank:\t$skilldata[0]\nXP:      $skilldata[2]");
+				}
+				# Else
+				else
+				{
+					# Set the info into the level and rank labels of the skill
+					$self->{$skillnames[$counter]."stats07"}->SetLabel("Level:\t$skilldata[1]\nRank:\t$skilldata[0]\nXP:\t\t$skilldata[2]");
+				}
+				
+			}
+			# Else
+			else
+			{
+				# If we are on windows
+				if ($OS =~ /MSWin32/)
+				{
+					# Set the info as Not Available
+					$self->{$skillnames[$counter]."stats07"}->SetLabel("Level: N/A\nRank: N/A\nXP:     N/A");
+				}
+				# Else if we are on mac osx
+				elsif($OS =~ /darwin/)
+				{
+					# Set the info as Not Available
+					$self->{$skillnames[$counter]."stats07"}->SetLabel("Level:\tN/A\nRank:\tN/A\nXP:      N/A");
+				}
+				
+				# Else
+				else
+				{
+					# Set the info as Not Available
+					$self->{$skillnames[$counter]."stats07"}->SetLabel("Level:\tN/A\nRank:\tN/A\nXP:\t\tN/A");
+				}
+				
+			}
+		}
+	}
+	else
+	{
+		# Make a for loop that goes through the highscores info
+		my $counter;
+		for ($counter = 0; $counter <= $skillcount; $counter++)
+		{	
+			# Set the info about the level, rank and xp label of the skill
+			$self->{$skillnames[$counter]."stats07"}->SetLabel("Level:\tN/A\nRank:\tN/A\nXP:\t\tN/A");
 		}
 	}
 }
