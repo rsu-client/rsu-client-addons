@@ -2,7 +2,7 @@
 <resource xmlns="http://www.wxwindows.org/wxxrc" version="2.3.0.1">
 	<object class="wxFrame" name="mainwindow">
 		<style>wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL</style>
-		<size>438,463</size>
+		<size>442,774</size>
 		<title>Player Lookup</title>
 		<aui_managed>0</aui_managed>
 		<object class="wxPanel" name="mainpanel">
@@ -1327,6 +1327,52 @@
 														<border>5</border>
 														<object class="wxStaticBitmap" name="Dungeoneeringicon">
 															<bitmap>bitmaps/dungeoneering.png</bitmap>
+														</object>
+													</object>
+												</object>
+											</object>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxStaticBoxSizer">
+											<orient>wxVERTICAL</orient>
+											<label>Total</label>
+											<object class="sizeritem">
+												<option>1</option>
+												<flag>wxEXPAND</flag>
+												<border>5</border>
+												<object class="wxFlexGridSizer">
+													<rows>1</rows>
+													<cols>2</cols>
+													<vgap>0</vgap>
+													<hgap>0</hgap>
+													<growablecols>0</growablecols>
+													<growablerows></growablerows>
+													<object class="sizeritem">
+														<option>0</option>
+														<flag>wxALL</flag>
+														<border>5</border>
+														<object class="wxStaticText" name="Divinationstats">
+															<font>
+																<size>8</size>
+																<family>default</family>
+																<style>normal</style>
+																<weight>normal</weight>
+																<underlined>0</underlined>
+															</font>
+															<label>Level: \nRank: \nXP: </label>
+															<wrap>-1</wrap>
+														</object>
+													</object>
+													<object class="sizeritem">
+														<option>0</option>
+														<flag></flag>
+														<border>5</border>
+														<object class="wxStaticBitmap" name="Divinationicon">
+															<bitmap>bitmaps/divination.png</bitmap>
 														</object>
 													</object>
 												</object>

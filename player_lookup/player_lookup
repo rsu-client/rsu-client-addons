@@ -4,10 +4,10 @@
 use strict;
 
 # Make an array with all skillnames
-my @skillnames = ("Overall","Attack","Defence","Strength","Constitution","Ranged","Prayer","Magic","Cooking","Woodcutting","Fletching","Fishing","Firemaking","Crafting","Smithing","Mining","Herblore","Agility","Thieving","Slayer","Farming","Runecrafting","Hunter","Construction","Summoning","Dungeoneering");
+my @skillnames = ("Overall","Attack","Defence","Strength","Constitution","Ranged","Prayer","Magic","Cooking","Woodcutting","Fletching","Fishing","Firemaking","Crafting","Smithing","Mining","Herblore","Agility","Thieving","Slayer","Farming","Runecrafting","Hunter","Construction","Summoning","Dungeoneering", "Divination");
 
 # The amount of skills in RuneScape
-my $skillcount = 25;
+my $skillcount = 26;
 
 # Use FindBin module to get script directory
 use FindBin;
@@ -747,15 +747,15 @@ sub readurl
 		if(`ls /usr/bin | grep wget` =~  /wget/)
 		{
 			# Use wget command to fetch files
-			$fetchcommand = "wget -q --connect-timeout=20 --timeout=20 -O-" if !defined $timeout;
+			$fetchcommand = "wget -q --connect-timeout=10 --timeout=10 -O-" if !defined $timeout;
 			$fetchcommand = "wget -q --connect-timeout=$timeout --timeout=$timeout -O-" if defined $timeout;
 		}
 		# Else if /usr/bin contains curl
 		elsif(`ls /usr/bin | grep curl` =~  /curl/)
 		{
 			# Curl command equalent to the wget command to fetch files
-			$fetchcommand = "curl -g -L --connect-timeout 20 -m 20 -#" if !defined $timeout;
-			$fetchcommand = "curl -g -L --connect-timeout $timeout -m $timeout -#" if defined $timeout;
+			$fetchcommand = "curl -L --connect-timeout 10 -m 10 -#" if !defined $timeout;
+			$fetchcommand = "curl -L --connect-timeout $timeout -m $timeout -#" if defined $timeout;
 		}
 
 		# Read the contents of url
