@@ -788,7 +788,7 @@ sub fetchstats07
 	{
 		# Make a for loop that goes through the highscores info
 		my $counter;
-		for ($counter = 0; $counter <= $skillcount; $counter++)
+		for ($counter = 0; $counter <= 23; $counter++)
 		{	
 			# Set the info about the level, rank and xp label of the skill
 			$self->{$skillnames[$counter]."stats07"}->SetLabel("Level:\tN/A\nRank:\tN/A\nXP:\t\tN/A");
