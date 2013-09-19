@@ -214,34 +214,40 @@ sub search_ge
             # Make an array to keep the item data
             my @itemdata = split /;/,$item;
             
-            print "$itemdata[1] has ".length($itemdata[1])." characters\n";
-            
             # If the item is a Free item
             if ($itemdata[2] =~ /Free/)
             {
-                # Add an extra tab
-                $itemdata[2] = "$itemdata[2]\t\t";
+                # Add extra tabs or underscores
+                $itemdata[2] = "$itemdata[2]\t\t" if $OS !~ /(darwin|MSWin32)/;
+                $itemdata[2] = "$itemdata[2]     " if $OS =~ /(darwin|MSWin32)/;
             }
             
             # If item price is 1 to 2 digit(s)
             if ($itemdata[3] =~ /^\d{1,4}$/)
             {
-                $itemdata[3] = "$itemdata[3]\t";
+                # Add extra tabs or underscores
+                $itemdata[3] = "$itemdata[3]\t" if $OS !~ /(darwin|MSWin32)/;
+                $itemdata[3] = "$itemdata[3]     " if $OS =~ /(darwin|MSWin32)/;
             }
             
             # If todays change contains 1 digit
             if ($itemdata[4] =~ /^\d{1,1}$/)
             {
-                $itemdata[4] = "$itemdata[4]\t\t";
+                # Add extra tabs or underscores
+                $itemdata[4] = "$itemdata[4]\t\t" if $OS !~ /(darwin|MSWin32)/;
+                $itemdata[4] = "$itemdata[4]          " if $OS =~ /(darwin|MSWin32)/;
             }
             # Else if todays change contains 2 to 4 digits
             elsif($itemdata[4] =~ /^\D{1,1}\d{1,4}$/)
             {
-                $itemdata[4] = "$itemdata[4]\t";
+                # Add extra tabs or underscores
+                $itemdata[4] = "$itemdata[4]\t" if $OS !~ /(darwin|MSWin32)/;
+                $itemdata[4] = "$itemdata[4]     " if $OS =~ /(darwin|MSWin32)/;
             }
             
             # Add the item to the item list
-            $self->{itemlist}->Append("Name:\t$itemdata[1]\n\tType:  $itemdata[2]\t|Price:  $itemdata[3]\t|Today's change(gp):  $itemdata[4]\t|ID:  $itemdata[0]");
+            $self->{itemlist}->Append("Name:\t$itemdata[1]\n\tType:  $itemdata[2]\t|Price:  $itemdata[3]\t|Today's change(gp):  $itemdata[4]\t|ID:  $itemdata[0]") if $OS !~ /(darwin|MSWin32)/;
+            $self->{itemlist}->Append("Name: $itemdata[1]              Type:  $itemdata[2]     Price:  $itemdata[3]     Today's change(gp):  $itemdata[4]     ID:  $itemdata[0]") if $OS =~ /(darwin|MSWin32)/;
         }
         
     }
