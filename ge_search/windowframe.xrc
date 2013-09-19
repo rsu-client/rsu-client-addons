@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<resource xmlns="http://www.wxwindows.org/wxxrc" version="2.3.0.1">
+	<object class="wxFrame" name="mainwindow">
+		<style>wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL</style>
+		<size>670,419</size>
+		<title>Grand Exchange Search</title>
+		<centered>1</centered>
+		<aui_managed>0</aui_managed>
+		<object class="wxPanel" name="mainpanel">
+			<style>wxTAB_TRAVERSAL</style>
+			<object class="wxFlexGridSizer">
+				<rows>0</rows>
+				<cols>1</cols>
+				<vgap>0</vgap>
+				<hgap>0</hgap>
+				<growablecols>0</growablecols>
+				<growablerows>1</growablerows>
+				<object class="sizeritem">
+					<option>1</option>
+					<flag>wxEXPAND</flag>
+					<border>5</border>
+					<object class="wxBoxSizer">
+						<orient>wxHORIZONTAL</orient>
+						<object class="sizeritem">
+							<option>0</option>
+							<flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+							<border>5</border>
+							<object class="wxStaticText" name="lb_itemname">
+								<label>Item name:</label>
+								<wrap>-1</wrap>
+							</object>
+						</object>
+						<object class="sizeritem">
+							<option>1</option>
+							<flag>wxALL|wxEXPAND</flag>
+							<border>5</border>
+							<object class="wxTextCtrl" name="itemname">
+								<style>wxTE_PROCESS_ENTER</style>
+								<value></value>
+							</object>
+						</object>
+						<object class="sizeritem">
+							<option>0</option>
+							<flag>wxALL</flag>
+							<border>5</border>
+							<object class="wxButton" name="search">
+								<label>Search</label>
+								<default>0</default>
+							</object>
+						</object>
+					</object>
+				</object>
+				<object class="sizeritem">
+					<option>1</option>
+					<flag>wxEXPAND</flag>
+					<border>5</border>
+					<object class="wxStaticBoxSizer">
+						<orient>wxVERTICAL</orient>
+						<label> Search results (First 20 items found)</label>
+						<object class="sizeritem">
+							<option>1</option>
+							<flag>wxALL|wxEXPAND</flag>
+							<border>3</border>
+							<object class="wxListBox" name="itemlist">
+								<style>wxLB_SINGLE</style>
+								<content />
+							</object>
+						</object>
+					</object>
+				</object>
+				<object class="sizeritem">
+					<option>0</option>
+					<flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+					<border>5</border>
+					<object class="wxStaticText" name="m_staticText2">
+						<style>wxALIGN_CENTRE</style>
+						<label>Double click on an item to view it on the Grand Exchange website.</label>
+						<wrap>-1</wrap>
+					</object>
+				</object>
+			</object>
+		</object>
+		<object class="wxStatusBar" name="m_statusBar1">
+			<style>wxST_SIZEGRIP</style>
+			<fields>1</fields>
+		</object>
+	</object>
+</resource>

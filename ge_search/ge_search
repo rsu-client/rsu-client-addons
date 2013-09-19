@@ -1,0 +1,346 @@
+#!/usr/bin/perl -w
+
+# Be strict to avoid messy code
+use strict;
+
+# Use FindBin module to get script directory
+use FindBin;
+
+# Use the Cwd module to get the current working directory
+use Cwd;
+
+# Get the cwd
+my $cwd = getcwd;
+
+# Name of our xrc gui resource file
+my $xrc_gui_file = "windowframe.xrc";
+
+# Disable buffering
+$|=1;
+
+# Get script directory
+my $scriptdir = $FindBin::RealBin;
+# Get script filename
+my $scriptname = $FindBin::Script;
+# Detect the current OS
+my $OS = "$^O";
+
+# Add the universal addons directory to the include path
+unshift @INC, "$cwd/modules";
+
+# Make a variable for users homedir
+my $HOME;
+# If we are on windows
+if ($OS =~ /MSWin32/)
+{
+    # Get the environment variable for USERPROFILE
+    $HOME = $ENV{"USERPROFILE"};
+    # Replace all / with \
+    $HOME =~ s/\//\\/g;
+}
+# Else we are on UNIX
+else
+{
+    $HOME = $ENV{"HOME"};
+}
+
+#---------------------------------------- *** ----------------------------------------
+#---------------------------------------- *** ----------------------------------------
+#---------------------------------------- *** ----------------------------------------
+
+package wxTopLevelFrame;
+
+use Wx qw[:everything];
+use Wx::XRC;
+# Which events shall we include
+use Wx::Event qw(EVT_BUTTON EVT_LISTBOX_DCLICK EVT_TEXT_ENTER);
+
+# Require the rsu grand exchange module
+require rsu::ge;
+
+use base qw(Wx::Frame);
+
+sub new
+{
+    # Create a class
+    my $class = shift;
+    
+    # Assign class object to $self
+    my $self = $class->SUPER::new;
+    
+    # Initialize everything
+    $self->initialize;
+    
+    return $self;
+}
+
+sub initialize
+{
+    # Get pointers
+    my $self = shift;
+    
+    # Create mutators for widgets (enter the objectname for every object here)
+    $self->create_mutator
+    (
+        qw
+        (
+            xrc_resource
+        )
+    );
+    
+    load_xrc_gui($self);
+    
+    set_layout($self);
+    
+    set_events($self);
+    
+    set_tooltips($self);
+}
+
+sub load_xrc_gui
+{
+    # Get the pointers
+    my $self = shift;
+    
+    # Get the xrc file
+    my $xrc_file = "$cwd/$xrc_gui_file";
+    
+    # Initialize WX
+    Wx::InitAllImageHandlers();
+    
+    # Create xrc/xml resource
+    $self->xrc_resource = Wx::XmlResource->new;
+    # Initialize handlers
+    $self->xrc_resource->InitAllHandlers;
+    # Load the xrc file
+    $self->xrc_resource->Load($xrc_file);
+    
+    # Tell what window/frame to load
+    $self->xrc_resource->LoadFrame($self,undef,"mainwindow");
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+sub set_layout
+{
+    # Get the pointers
+    my $self = shift;
+    
+    # Find the widgets
+    # $self->objectname = $self->FindWindow('objectname');
+    $self->{view} = $self->FindWindow('view');
+    $self->{search} = $self->FindWindow('search');
+    $self->{itemlist} = $self->FindWindow('itemlist');
+    $self->{itemname} = $self->FindWindow('itemname');
+    
+    # Give the itemname box focus
+    $self->{itemname}->SetFocus;
+    
+    # Set the icon for the window
+	$self->SetIcon(Wx::Icon->new("$cwd/bitmaps/icon.png", wxBITMAP_TYPE_PNG));
+    
+    # Set default size
+	$self->SetSize(670,420);
+	
+	# Make sure the window cannot be resized smaller
+	$self->SetMinSize($self->GetSize);
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+
+sub set_events
+{
+    # Get the pointers
+    my $self = shift;
+    
+    # Setup the events
+    # EVT_BUTTON($self, Wx::XmlResource::GetXRCID('objectname'), \&function);
+    
+    # Find the widgets
+    # $self->objectname = $self->FindWindow('objectname');
+    
+    # Setup the button event that triggers a GE search
+    EVT_BUTTON($self, Wx::XmlResource::GetXRCID('search'), \&search_ge);
+    EVT_LISTBOX_DCLICK($self, Wx::XmlResource::GetXRCID('itemlist'), \&view_item);
+    EVT_TEXT_ENTER($self, Wx::XmlResource::GetXRCID('itemname'), \&search_ge);
+    
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+sub view_item
+{
+    # Get the passed data
+    my ($self) = @_;
+    
+    # Get the selected item info
+    my $item = $self->{itemlist}->GetStringSelection;
+    
+    # Remove everything but the id
+    my @item_id = split /ID:  /, $item;
+    
+    # Open the item on the grand exchange webpage
+    Wx::LaunchDefaultBrowser("http://services.runescape.com/m=itemdb_rs/viewitem.ws?obj=$item_id[-1]");
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+sub search_ge
+{
+    # Get the passed data
+    my ($self) = @_;
+    
+    # Clear the itemlist
+    $self->{itemlist}->Clear;
+    
+    # If the searchbox is not empty
+    if ($self->{itemname}->GetValue !~ /^$/)
+    {
+        # Do an item search on the Grand Exchange
+        my @result = rsu::ge::search($self->{itemname}->GetValue);
+        
+        # For item we found
+        foreach my $item(@result)
+        {
+            # Make an array to keep the item data
+            my @itemdata = split /;/,$item;
+            
+            print "$itemdata[1] has ".length($itemdata[1])." characters\n";
+            
+            # If the item is a Free item
+            if ($itemdata[2] =~ /Free/)
+            {
+                # Add an extra tab
+                $itemdata[2] = "$itemdata[2]\t\t";
+            }
+            
+            # If item price is 1 to 2 digit(s)
+            if ($itemdata[3] =~ /^\d{1,4}$/)
+            {
+                $itemdata[3] = "$itemdata[3]\t";
+            }
+            
+            # If todays change contains 1 digit
+            if ($itemdata[4] =~ /^\d{1,1}$/)
+            {
+                $itemdata[4] = "$itemdata[4]\t\t";
+            }
+            # Else if todays change contains 2 to 4 digits
+            elsif($itemdata[4] =~ /^\D{1,1}\d{1,4}$/)
+            {
+                $itemdata[4] = "$itemdata[4]\t";
+            }
+            
+            # Add the item to the item list
+            $self->{itemlist}->Append("Name:\t$itemdata[1]\n\tType:  $itemdata[2]\t|Price:  $itemdata[3]\t|Today's change(gp):  $itemdata[4]\t|ID:  $itemdata[0]");
+        }
+        
+    }
+    # Else
+    else
+    {
+        # Tell user that they need to enter an item name
+        Wx::MessageBox("Enter an item name before searching!", "Enter an item name!",wxOK,$self);
+    }
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+
+
+# Create mutator function from "Programming Perl"
+sub create_mutator
+{
+
+    my $self = shift;
+
+    # From "Programming Perl" 3rd Ed. p338.
+    for my $attribute (@_)
+    {
+
+        no strict "refs"; # So symbolic ref to typeglob works.
+        no warnings;      # Suppress "subroutine redefined" warning.
+
+        *$attribute = sub : lvalue
+        {
+
+            my $self = shift;
+
+            $self->{$attribute} = shift if @_;
+            $self->{$attribute};
+
+        };
+
+    }
+
+}
+
+
+### Events
+
+sub close_clicked
+{
+    # Get pointers
+    my ($self, $event) = @_;
+    
+    # Close window
+    $self->Destroy();
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+sub set_tooltips
+{
+    my ($self) = @_;
+        
+    # Set tooltips with info about the settings
+    # $self->objectname->SetToolTip("message");
+    
+}
+
+#---------------------------------------- *** ----------------------------------------
+#---------------------------------------- *** ----------------------------------------
+#---------------------------------------- *** ----------------------------------------
+
+package application;
+use base qw(Wx::App);
+
+sub OnInit
+{
+    # Get pointers
+    my $self = shift;
+    
+    # Create mainwindow(new window)
+    my $mainwindow = wxTopLevelFrame->new(undef, -1);
+    
+    # Set mainwindo/topwindow
+    $self->SetTopWindow($mainwindow);
+    
+    # Show the window
+    $mainwindow->Show(1);
+}
+
+#---------------------------------------- *** ----------------------------------------
+#---------------------------------------- *** ----------------------------------------
+#---------------------------------------- *** ----------------------------------------
+
+
+package main;
+
+my $app = application->new;
+$app->MainLoop;
+
+1;
