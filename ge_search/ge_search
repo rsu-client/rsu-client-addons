@@ -52,7 +52,21 @@ package wxTopLevelFrame;
 
 use Wx qw[:everything];
 use Wx::XRC;
-use Wx::Html;
+
+# Do a check to see if Wx::Html is supported
+my $wxhtml = 1;
+eval "use Wx::Html"; $wxhtml = 0 if $@;
+
+# If Wx::Html cannot be loaded
+if ($wxhtml =~ /^0$/)
+{
+    # Tell user that they need a newer version of the rsu-query
+    Wx::MessageBox("Wx::Html is needed in order to support this addon!\nFollow the step for your platform below.\n\nLinux: Update your client to version 4.1.1 or newer\nMac: Reinstall the client or update the rsu-api\nWindows: Restart the client and choose yes to update the runtime.", "Wx::Html not available", wxOK);
+    
+    # Kill the addon
+    die "Wx::Html is needed in order for this addon to work,\nplease update your client and rsu-query runtime!\n";
+}
+
 # Which events shall we include
 use Wx::Event qw(EVT_BUTTON EVT_LISTBOX_DCLICK EVT_TEXT_ENTER);
 
