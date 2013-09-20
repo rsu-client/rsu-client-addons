@@ -52,6 +52,7 @@ package wxTopLevelFrame;
 
 use Wx qw[:everything];
 use Wx::XRC;
+use Wx::Html;
 # Which events shall we include
 use Wx::Event qw(EVT_BUTTON EVT_LISTBOX_DCLICK EVT_TEXT_ENTER);
 
@@ -132,8 +133,21 @@ sub set_layout
     # $self->objectname = $self->FindWindow('objectname');
     $self->{view} = $self->FindWindow('view');
     $self->{search} = $self->FindWindow('search');
-    $self->{itemlist} = $self->FindWindow('itemlist');
+    $self->{searchpanel} = $self->FindWindow('searchpanel');
     $self->{itemname} = $self->FindWindow('itemname');
+    
+    # Create a boxsizer to contain the itemlist
+    $self->{sizer} = Wx::BoxSizer->new(wxVERTICAL);
+    
+    # Create the itemlist (simplehtmllistbox)
+    my $choices = [  ];
+    $self->{itemlist} = Wx::SimpleHtmlListBox->new($self->{searchpanel}, -1, wxDefaultPosition, wxDefaultSize, $choices, wxHLB_DEFAULT_STYLE );
+    
+    # Add the itemlist to the sizer
+    $self->{sizer}->Add($self->{itemlist}, 1, wxALL|wxEXPAND, 5);
+    
+    # Add sizer to searchpanel
+    $self->{searchpanel}->SetSizer($self->{sizer});
     
     # Give the itemname box focus
     $self->{itemname}->SetFocus;
@@ -142,7 +156,7 @@ sub set_layout
 	$self->SetIcon(Wx::Icon->new("$cwd/bitmaps/icon.png", wxBITMAP_TYPE_PNG));
     
     # Set default size
-	$self->SetSize(670,420);
+	$self->SetSize(550,420);
 	
 	# Make sure the window cannot be resized smaller
 	$self->SetMinSize($self->GetSize);
@@ -166,7 +180,7 @@ sub set_events
     
     # Setup the button event that triggers a GE search
     EVT_BUTTON($self, Wx::XmlResource::GetXRCID('search'), \&search_ge);
-    EVT_LISTBOX_DCLICK($self, Wx::XmlResource::GetXRCID('itemlist'), \&view_item);
+    EVT_LISTBOX_DCLICK($self, $self->{itemlist}, \&view_item);
     EVT_TEXT_ENTER($self, Wx::XmlResource::GetXRCID('itemname'), \&search_ge);
     
 }
@@ -181,13 +195,13 @@ sub view_item
     my ($self) = @_;
     
     # Get the selected item info
-    my $item = $self->{itemlist}->GetStringSelection;
+    my $item = $self->{itemlist}->GetString($self->{itemlist}->GetSelection);
     
     # Remove everything but the id
-    my @item_id = split /ID:  /, $item;
+    $item =~ s/.+ID:&emsp;(\d{1,9})<\/td><\/table>/$1/;
     
     # Open the item on the grand exchange webpage
-    Wx::LaunchDefaultBrowser("http://services.runescape.com/m=itemdb_rs/viewitem.ws?obj=$item_id[-1]");
+    Wx::LaunchDefaultBrowser("http://services.runescape.com/m=itemdb_rs/viewitem.ws?obj=$item");
 }
 
 #
@@ -199,8 +213,16 @@ sub search_ge
     # Get the passed data
     my ($self) = @_;
     
-    # Clear the itemlist
-    $self->{itemlist}->Clear;
+    # Get the amount of indexes in the itemlise
+    my $indexes = $self->{itemlist}->GetCount;
+    
+    # Make a for loop to clear the itemlist
+    my $counter;
+    for ($counter = 0; $counter <= $indexes; $counter++)
+    {
+        # Delete an index in the itemlist
+        $self->{itemlist}->Delete(0);
+    }
     
     # If the searchbox is not empty
     if ($self->{itemname}->GetValue !~ /^$/)
@@ -213,41 +235,26 @@ sub search_ge
         {
             # Make an array to keep the item data
             my @itemdata = split /;/,$item;
+
+            # Make type font bold and green if F2P item
+            $itemdata[2] = "<font color=#088A29>$itemdata[2]</font>" if $itemdata[2] =~ /^Free/;
+            # Make type font bold and red if P2P item
+            $itemdata[2] = "<font color=#FF8000>$itemdata[2]</font>" if $itemdata[2] =~ /^Members/;
+
+            # Make trend font bold and green if price is going up
+            $itemdata[4] = "<b><font color=#088A29>$itemdata[4]</font></b>" if $itemdata[4] =~ /^\+/;
+            # Make trend font bold and red if price is going down
+            $itemdata[4] = "<b><font color=red>$itemdata[4]</font></b>" if $itemdata[4] =~ /^-/;
             
-            # If the item is a Free item
-            if ($itemdata[2] =~ /Free/)
-            {
-                # Add extra tabs or underscores
-                $itemdata[2] = "$itemdata[2]\t\t" if $OS !~ /(darwin|MSWin32)/;
-                $itemdata[2] = "$itemdata[2]     " if $OS =~ /(darwin|MSWin32)/;
-            }
-            
-            # If item price is 1 to 2 digit(s)
-            if ($itemdata[3] =~ /^\d{1,4}$/)
-            {
-                # Add extra tabs or underscores
-                $itemdata[3] = "$itemdata[3]\t" if $OS !~ /(darwin|MSWin32)/;
-                $itemdata[3] = "$itemdata[3]     " if $OS =~ /(darwin|MSWin32)/;
-            }
-            
-            # If todays change contains 1 digit
-            if ($itemdata[4] =~ /^\d{1,1}$/)
-            {
-                # Add extra tabs or underscores
-                $itemdata[4] = "$itemdata[4]\t\t" if $OS !~ /(darwin|MSWin32)/;
-                $itemdata[4] = "$itemdata[4]          " if $OS =~ /(darwin|MSWin32)/;
-            }
-            # Else if todays change contains 2 to 4 digits
-            elsif($itemdata[4] =~ /^\D{1,1}\d{1,4}$/)
-            {
-                # Add extra tabs or underscores
-                $itemdata[4] = "$itemdata[4]\t" if $OS !~ /(darwin|MSWin32)/;
-                $itemdata[4] = "$itemdata[4]     " if $OS =~ /(darwin|MSWin32)/;
-            }
+            # Make price bold and green if price is between 10k and 999k
+            $itemdata[3] = "<b><font color=#088A29>$itemdata[3]</font></b>" if $itemdata[3] =~ /k$/;
+            # Make price bold and orange if price is between 1m and 999m
+            $itemdata[3] = "<b><font color=#FF8000>$itemdata[3]</font></b>" if $itemdata[3] =~ /m$/;
+            # Make price bold and black if price is between 1m and 999m
+            $itemdata[3] = "<b><font color=#088A85>$itemdata[3]</font></b>" if $itemdata[3] =~ /b\s+$/;
             
             # Add the item to the item list
-            $self->{itemlist}->Append("Name:\t$itemdata[1]\n\tType:  $itemdata[2]\t|Price:  $itemdata[3]\t|Today's change(gp):  $itemdata[4]\t|ID:  $itemdata[0]") if $OS !~ /(darwin|MSWin32)/;
-            $self->{itemlist}->Append("Name: $itemdata[1]              Type:  $itemdata[2]     Price:  $itemdata[3]     Today's change(gp):  $itemdata[4]     ID:  $itemdata[0]") if $OS =~ /(darwin|MSWin32)/;
+            $self->{itemlist}->Append("<table width=99%><td>Name:&emsp;<b><u>$itemdata[1]</u></b></td><td width=25%>Type:&emsp;$itemdata[2]</td></table><table width=99%><td width=35%>Price:&emsp;$itemdata[3]</td><td width=40%>Today's change(gp):&emsp;$itemdata[4]</td><td width=10%>ID:&emsp;$itemdata[0]</td></table>");
         }
         
     }

@@ -59,11 +59,10 @@
 						<label> Search results (First 20 items found)</label>
 						<object class="sizeritem">
 							<option>1</option>
-							<flag>wxALL|wxEXPAND</flag>
-							<border>3</border>
-							<object class="wxListBox" name="itemlist">
-								<style>wxLB_HSCROLL|wxLB_SINGLE</style>
-								<content />
+							<flag>wxEXPAND | wxALL</flag>
+							<border>0</border>
+							<object class="wxPanel" name="searchpanel">
+								<style>wxTAB_TRAVERSAL</style>
 							</object>
 						</object>
 					</object>
