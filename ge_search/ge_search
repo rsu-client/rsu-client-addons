@@ -156,7 +156,7 @@ sub set_layout
 	$self->SetIcon(Wx::Icon->new("$cwd/bitmaps/icon.png", wxBITMAP_TYPE_PNG));
     
     # Set default size
-	$self->SetSize(550,420);
+	$self->SetSize(600,420);
 	
 	# Make sure the window cannot be resized smaller
 	$self->SetMinSize($self->GetSize);
