@@ -4,7 +4,10 @@
 use strict;
 
 # Make an array with all skillnames
-my @skillnames = ("Overall","Attack","Defence","Strength","Constitution","Ranged","Prayer","Magic","Cooking","Woodcutting","Fletching","Fishing","Firemaking","Crafting","Smithing","Mining","Herblore","Agility","Thieving","Slayer","Farming","Runecrafting","Hunter","Construction","Summoning","Dungeoneering", "Divination");
+my @skillnames = ("Overall","Attack","Defence","Strength","Constitution","Ranged","Prayer","Magic","Cooking","Woodcutting","Fletching","Fishing","Firemaking","Crafting","Smithing","Mining","Herblore","Agility","Thieving","Slayer","Farming","Runecrafting","Hunter","Construction","Summoning","Dungeoneering","Divination");
+
+# Make an array that contains the order of the skills for the table
+my @skillorder = ("Attack","Constitution","Mining","Strength","Agility","Smithing","Defence","Herblore","Fishing","Ranged","Thieving","Cooking","Prayer","Crafting","Firemaking","Magic","Fletching","Woodcutting","Runecrafting","Slayer","Farming","Construction","Hunter", "Summoning","Dungeoneering","Divination","Overall");
 
 # The amount of skills in RuneScape
 my $skillcount = 26;
@@ -89,6 +92,9 @@ package wxTopLevelFrame;
 
 use Wx qw[:everything];
 use Wx::XRC;
+
+# FileSystem module, not used but kept as it might be used in the future
+#use Wx::FS;
 # Which events shall we include
 use Wx::Event qw(EVT_BUTTON EVT_TEXT_ENTER);
 
@@ -147,6 +153,9 @@ sub load_xrc_gui
 	# Initialize WX
 	Wx::InitAllImageHandlers();
 	
+	# Support for using external images (kept incase it can be used in the future)
+	#Wx::FileSystem::AddHandler(Wx::InternetFSHandler->new());
+	
 	# Create xrc/xml resource
 	$self->xrc_resource = Wx::XmlResource->new;
 	# Initialize handlers
@@ -191,12 +200,12 @@ sub set_layout
 	# $self->objectname = $self->FindWindow('objectname');
 	
 	# Get the highscores panel
-	$self->{highscores} = $self->FindWindow('highscores');
+	$self->{tab_highscores} = $self->FindWindow('tab_highscores');
 	# Make it scrollable
-	setScrollBars($self->{highscores});
+	setScrollBars($self->{tab_highscores});
 	
 	# Get the recentactivity panel
-	$self->{recentactivity_panel} = $self->FindWindow('recentactivity_panel');
+	#$self->{recentactivity_panel} = $self->FindWindow('recentactivity_panel');
 	
 	# Get the textbox for player name input
 	$self->{name} = $self->FindWindow('name');
@@ -207,21 +216,45 @@ sub set_layout
 	foreach my $skill(@skillnames)
 	{
 		$self->{$skill."stats"} = $self->FindWindow($skill.'stats');
-        
-        if ($skill !~ /(Summoning|Dungeoneering|Divination)/)
-        {
-            $self->{$skill."stats07"} = $self->FindWindow($skill.'stats07');
-        }
+		
+		if ($skill !~ /(Summoning|Dungeoneering|Divination)/)
+		{
+			$self->{$skill."stats07"} = $self->FindWindow($skill.'stats07');
+		}
 	}
 	
-    # Playerinfo and claninfo disabled until a way to fetch info is found
+	# Playerinfo and claninfo disabled until a way to fetch info is found
 	# Get the playerbio label
 	#$self->{playerinfo} = $self->FindWindow('playerinfo');
 	
 	# Get the claninfo label
 	#$self->{claninfo} = $self->FindWindow('claninfo');
 	
-	# Get the recentactivity label
+	# Get the mainpanel
+	$self->{mainpanel} = $self->FindWindow('mainpanel');
+	
+	# Get the label_player
+	$self->{label_player} = $self->FindWindow('label_player');
+	
+	# Get the highscoretable
+	$self->{highscoretable} = $self->FindWindow('highscoretable');
+	
+	# Get the highscoretable07
+	$self->{highscoretable07} = $self->FindWindow('highscoretable07');
+	
+	# Get the mainpanel
+	$self->{tabwindow} = $self->FindWindow('tabwindow');
+	
+	# Get the recentactivity tab
+	$self->{tab_recentactivity} = $self->FindWindow('tab_recentactivity');
+	
+	# Get the highscores tab
+	$self->{tab_highscores07} = $self->FindWindow('tab_highscores');
+	
+	# Get the highscores07 tab
+	$self->{tab_highscores07} = $self->FindWindow('tab_highscores07');
+	
+	# Get the recentactivity list
 	$self->{recentactivity} = $self->FindWindow('recentactivity');
 	
 	# Get the chathead bitmap widget
@@ -240,10 +273,97 @@ sub set_layout
 	$self->SetMinSize($self->GetSize);
 	#$self->SetMaxSize(Wx::Size->new(500,9999));
 	
+	# Set the colors
+	set_colors($self);
+	
 	# Set the layout
 	$self->Layout;
 	# Refresh window
 	$self->Refresh;
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+sub set_colors
+{
+	# Get the passed data
+	my ($self) = @_;
+	
+	# If we are not on windows
+	if ($OS !~ /MSWin32/)
+	{
+		# Change the color of the tabwindow and mainpanel too
+		$self->{mainpanel}->SetBackgroundColour(Wx::Colour->new("#000000"));
+		$self->{mainpanel}->SetForegroundColour(Wx::Colour->new("#E8B13F"));
+		$self->{label_player}->SetBackgroundColour(Wx::Colour->new("#000000"));
+		$self->{label_player}->SetForegroundColour(Wx::Colour->new("#E8B13F"));
+		$self->{tabwindow}->SetBackgroundColour(Wx::Colour->new("#222222"));
+		$self->{tabwindow}->SetForegroundColour(Wx::Colour->new("#E8B13F"));
+	}
+	
+	$self->{tab_recentactivity}->SetBackgroundColour(Wx::Colour->new("#222222"));
+	$self->{tab_recentactivity}->SetForegroundColour(Wx::Colour->new("#E8B13F"));
+	$self->{tab_highscores}->SetBackgroundColour(Wx::Colour->new("#222222"));
+	$self->{tab_highscores}->SetForegroundColour(Wx::Colour->new("#E8B13F"));
+	$self->{tab_highscores07}->SetBackgroundColour(Wx::Colour->new("#222222"));
+	$self->{tab_highscores07}->SetForegroundColour(Wx::Colour->new("#E8B13F"));
+	$self->{recentactivity}->SetBackgroundColour(Wx::Colour->new("#222222"));
+	$self->{recentactivity}->SetForegroundColour(Wx::Colour->new("#E8B13F"));
+	$self->{highscoretable}->SetBackgroundColour(Wx::Colour->new("#222222"));
+	$self->{highscoretable}->SetForegroundColour(Wx::Colour->new("#222222"));
+	$self->{highscoretable07}->SetBackgroundColour(Wx::Colour->new("#222222"));
+	$self->{highscoretable07}->SetForegroundColour(Wx::Colour->new("#222222"));
+	
+	# Make the highscore tables (lazy method atm due to lack of time, will be changed ASAP to auto generated)
+	$self->{highscoretable}->SetPage('<html>
+	<body bgcolor=#222222>
+		<table width=100% bgcolor=#222222>
+			<tr><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/attack.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/constitution.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/mining.png"></div></td></table></td>
+			</tr>
+			<tr><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/strength.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/agility.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/smithing.png"></div></td></table></td>
+			</tr>
+			<tr><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/defence.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/herblore.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/fishing.png"></div></td></table></td>
+			</tr>
+			<tr><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/ranged.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/thieving.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/cooking.png"></div></td></table></td>
+			</tr>
+			<tr><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/prayer.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/crafting.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/firemaking.png"></div></td></table></td>
+			</tr>
+			<tr><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/magic.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/fletching.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/woodcutting.png"></div></td></table></td>
+			</tr>
+			<tr><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/runecrafting.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/slayer.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/farming.png"></div></td></table></td>
+			</tr>
+			<tr><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/construction.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/hunter.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/summoning.png"></div></td></table></td>
+			</tr>
+			<tr><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/dungeoneering.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/divination.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/overall.png"></div></td></table></td>
+			</tr>
+		</table>
+	</body>
+</html>');
+
+$self->{highscoretable07}->SetPage('<html>
+	<body bgcolor=#222222>
+		<table width=100% bgcolor=#222222>
+			<tr><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/attack.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/constitution.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/mining.png"></div></td></table></td>
+			</tr>
+			<tr><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/strength.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/agility.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/smithing.png"></div></td></table></td>
+			</tr>
+			<tr><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/defence.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/herblore.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/fishing.png"></div></td></table></td>
+			</tr>
+			<tr><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/ranged.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/thieving.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/cooking.png"></div></td></table></td>
+			</tr>
+			<tr><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/prayer.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/crafting.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/firemaking.png"></div></td></table></td>
+			</tr>
+			<tr><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/magic.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/fletching.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/woodcutting.png"></div></td></table></td>
+			</tr>
+			<tr><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/runecrafting.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/slayer.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/farming.png"></div></td></table></td>
+			</tr>
+			<tr><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/construction.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/hunter.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/overall.png"></div></td></table></td>
+			</tr>
+		</table>
+	</body>
+</html>');
 }
 
 #
@@ -263,8 +383,8 @@ sub lookup_player
 	{
 		# Fetch the players stats
 		fetchstats($self, $playername);
-        
-        # Fetch the players stats
+		
+		# Fetch the players stats
 		fetchstats07($self, $playername);
 		
 		# Fetch the players data
@@ -327,12 +447,12 @@ sub setScrollBars
 	
 	# Set scroll properties
 	my $pixelsPerUnitX = 0;#15; 
-    my $pixelsPerUnitY = 15; 
-    my $noUnitsX = 0;#100; 
-    my $noUnitsY = 100; 
-    
-    # If we are on windows
-    if ($OS =~ /MSWin32/)
+	my $pixelsPerUnitY = 15; 
+	my $noUnitsX = 0;#100; 
+	my $noUnitsY = 100; 
+	
+	# If we are on windows
+	if ($OS =~ /MSWin32/)
 	{
 		# Add information about scrolling the X axis
 		$pixelsPerUnitX = 15;
@@ -487,7 +607,8 @@ sub set_recent_activity
 	parseRSS(\%recent_activity, \$rssfeed);
 	
 	# Make a variable to contain the players activity
-	my $activity = "\n";
+	my $activity = "<html>
+	<body bgcolor=\"#222222\">";
 	
 	# For each value in the array
 	foreach my $item (@{$recent_activity{'item'}})
@@ -498,31 +619,41 @@ sub set_recent_activity
 		# Remove the timestamp because it is always 00:00:00 GMT
 		$pubDate =~ s/\s+\d{2,2}:\d{2,2}:\d{2,2}\s+GMT//g;
 		
-		# Make a variable to contain the description because it needs fixing too
-		my $description = $item->{'description'};
-		
-		# Remove all tabs
-		$description =~ s/^\s+//g;
-		
-		# Replace all multiple whitespaces with normal whitespace
-		$description =~ s/\s+/ /g;
-		
-		$activity = $activity."$item->{'title'} - $pubDate\n$description\n________________________________________________________\n\n";
+		# Append the recent activity to the string
+		$activity = "$activity
+		<table width=100%>
+			<td>
+				<b>
+					<font color=#E8B13F size=3>$item->{'title'} - $pubDate</font>
+				</b>
+			</td>
+		</table>
+		<table width=100%>
+			<td>
+				<font color=#B8B8B8 size=2>$item->{'description'}</font>
+			</td>
+		</table>
+		<hr>";
 	}
 	
+	# Add the closing tags to the activity list
+	$activity = "$activity
+	</body>
+</html>";
+	
 	# Fix some stuff in the finished activity list
-	$activity =~ s/(&#8217;|&APOS;)/'/gi;
-	$activity =~ s/(&#8211;)/-/gi;
-	$activity =~ s/(&#13;|&#10;|&#9;)//gi;
+	#$activity =~ s/(&#8217;|&APOS;)/'/gi;
+	#$activity =~ s/(&#8211;)/-/gi;
+	#$activity =~ s/(&#13;|&#10;|&#9;)//gi;
 	
 	# Add the recent activity to the window
-	$self->{recentactivity}->SetLabel($activity);
+	$self->{recentactivity}->SetPage($activity);
 	
 	# Make the label wrap
-	$self->{recentactivity}->Wrap(400);
+	#$self->{recentactivity}->Wrap(400);
 	
 	# Make it scrollable
-	setScrollBars($self->{recentactivity_panel});
+	#setScrollBars($self->{recentactivity_panel});
 }
 
 #
@@ -535,12 +666,12 @@ sub set_playerbio
 	my ($self, $player) = @_;
 	
 	# Fetch the player details
-	my $jquerystring = readurl('http://services.runescape.com/m=website-data/g=runescape/playerDetails.ws?names=["'.$player.'"]&callback=jQuery000000000000000_0000000000');
+	#my $jquerystring = readurl('http://services.runescape.com/m=website-data/g=runescape/playerDetails.ws?names=["'.$player.'"]&callback=jQuery000000000000000_0000000000');
 	
 	# Remove unneeded parts of the output
-	$jquerystring =~ s/(jQuery000000000000000_0000000000\(\[\{|"|\}\]\);)//g;
+	#$jquerystring =~ s/(jQuery000000000000000_0000000000\(\[\{|"|\}\]\);)//g;
 	
-    # Disabled until a player bio solution is found
+	# Disabled until a player bio solution is found
 	# Parse and set the player claninfo
 	#set_claninfo($self, $jquerystring);
 	
@@ -606,6 +737,9 @@ sub fetchstats
 
 	# Enable warnings again
 	use warnings;
+	
+	# Make a hash table containing the skill stats
+	my $highscoretable = {};
 
 	# If fetching highscore data was successful
 	if ($highscore !~ /^0$/)
@@ -628,49 +762,14 @@ sub fetchstats
 				$skilldata[2] = commify($skilldata[2]);
 				print "$skilldata[0]\n";
 				
-				# If we are on windows
-				if ($OS =~ /MSWin32/)
-				{
-					# Set the info into the level and rank labels of the skill
-					$self->{$skillnames[$counter]."stats"}->SetLabel("Level: $skilldata[1]\nRank: $skilldata[0]\nXP:     $skilldata[2]");
-				}
-				# Else if we are on mac osx
-				elsif ($OS =~ /darwin/)
-				{
-					# Set the info into the level and rank labels of the skill
-					$self->{$skillnames[$counter]."stats"}->SetLabel("Level:\t$skilldata[1]\nRank:\t$skilldata[0]\nXP:      $skilldata[2]");
-				}
-				# Else
-				else
-				{
-					# Set the info into the level and rank labels of the skill
-					$self->{$skillnames[$counter]."stats"}->SetLabel("Level:\t$skilldata[1]\nRank:\t$skilldata[0]\nXP:\t\t$skilldata[2]");
-				}
-				
+				# Set the info into the level and rank labels of the skill
+				$highscoretable->{$skillnames[$counter]} = "<td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: $skilldata[1]<br>Rank: $skilldata[0]<br>XP: $skilldata[2]</font></td><td valign=top><div align=right><img src=\"./bitmaps/".lc($skillnames[$counter]).".png\"></div></td></table></td>";
 			}
 			# Else
 			else
 			{
-				# If we are on windows
-				if ($OS =~ /MSWin32/)
-				{
-					# Set the info as Not Available
-					$self->{$skillnames[$counter]."stats"}->SetLabel("Level: N/A\nRank: N/A\nXP:     N/A");
-				}
-				# Else if we are on mac osx
-				elsif($OS =~ /darwin/)
-				{
-					# Set the info as Not Available
-					$self->{$skillnames[$counter]."stats"}->SetLabel("Level:\tN/A\nRank:\tN/A\nXP:      N/A");
-				}
-				
-				# Else
-				else
-				{
-					# Set the info as Not Available
-					$self->{$skillnames[$counter]."stats"}->SetLabel("Level:\tN/A\nRank:\tN/A\nXP:\t\tN/A");
-				}
-				
+				# Set the info as Not Available
+				$highscoretable->{$skillnames[$counter]} = "<td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src=\"./bitmaps/".lc($skillnames[$counter]).".png\"></div></td></table></td>";
 			}
 		}
 	}
@@ -680,10 +779,13 @@ sub fetchstats
 		my $counter;
 		for ($counter = 0; $counter <= $skillcount; $counter++)
 		{	
-			# Set the info about the level, rank and xp label of the skill
-			$self->{$skillnames[$counter]."stats"}->SetLabel("Level:\tN/A\nRank:\tN/A\nXP:\t\tN/A");
+			# Set the info as Not Available
+			$highscoretable->{$skillnames[$counter]} = "<td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src=\"./bitmaps/".lc($skillnames[$counter]).".png\"></div></td></table></td>";
 		}
 	}
+	
+	# Set the highscores
+	set_highscoretable($self,$highscoretable,$skillcount)
 }
 
 #
@@ -717,6 +819,9 @@ sub fetchstats07
 	# Enable warnings again
 	use warnings;
 
+	# Make a hash table containing the skill stats
+	my $highscoretable = {};
+
 	# If fetching highscore data was successful
 	if ($highscore !~ /^0$/)
 	{
@@ -738,49 +843,14 @@ sub fetchstats07
 				$skilldata[2] = commify($skilldata[2]);
 				print "$skilldata[0]\n";
 				
-				# If we are on windows
-				if ($OS =~ /MSWin32/)
-				{
-					# Set the info into the level and rank labels of the skill
-					$self->{$skillnames[$counter]."stats07"}->SetLabel("Level: $skilldata[1]\nRank: $skilldata[0]\nXP:     $skilldata[2]");
-				}
-				# Else if we are on mac osx
-				elsif ($OS =~ /darwin/)
-				{
-					# Set the info into the level and rank labels of the skill
-					$self->{$skillnames[$counter]."stats07"}->SetLabel("Level:\t$skilldata[1]\nRank:\t$skilldata[0]\nXP:      $skilldata[2]");
-				}
-				# Else
-				else
-				{
-					# Set the info into the level and rank labels of the skill
-					$self->{$skillnames[$counter]."stats07"}->SetLabel("Level:\t$skilldata[1]\nRank:\t$skilldata[0]\nXP:\t\t$skilldata[2]");
-				}
-				
+				# Set the info into the level and rank labels of the skill
+				$highscoretable->{$skillnames[$counter]} = "<td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: $skilldata[1]<br>Rank: $skilldata[0]<br>XP: $skilldata[2]</font></td><td valign=top><div align=right><img src=\"./bitmaps/".lc($skillnames[$counter]).".png\"></div></td></table></td>";
 			}
 			# Else
 			else
 			{
-				# If we are on windows
-				if ($OS =~ /MSWin32/)
-				{
-					# Set the info as Not Available
-					$self->{$skillnames[$counter]."stats07"}->SetLabel("Level: N/A\nRank: N/A\nXP:     N/A");
-				}
-				# Else if we are on mac osx
-				elsif($OS =~ /darwin/)
-				{
-					# Set the info as Not Available
-					$self->{$skillnames[$counter]."stats07"}->SetLabel("Level:\tN/A\nRank:\tN/A\nXP:      N/A");
-				}
-				
-				# Else
-				else
-				{
-					# Set the info as Not Available
-					$self->{$skillnames[$counter]."stats07"}->SetLabel("Level:\tN/A\nRank:\tN/A\nXP:\t\tN/A");
-				}
-				
+				# Set the info as Not Available
+				$highscoretable->{$skillnames[$counter]} = "<td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src=\"./bitmaps/".lc($skillnames[$counter]).".png\"></div></td></table></td>";
 			}
 		}
 	}
@@ -790,10 +860,13 @@ sub fetchstats07
 		my $counter;
 		for ($counter = 0; $counter <= 23; $counter++)
 		{	
-			# Set the info about the level, rank and xp label of the skill
-			$self->{$skillnames[$counter]."stats07"}->SetLabel("Level:\tN/A\nRank:\tN/A\nXP:\t\tN/A");
+			# Set the info as Not Available
+			$highscoretable->{$skillnames[$counter]} = "<td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src=\"./bitmaps/".lc($skillnames[$counter]).".png\"></div></td></table></td>";
 		}
 	}
+	
+	# Set the highscores
+	set_highscoretable($self,$highscoretable,23)
 }
 
 #
@@ -810,6 +883,70 @@ sub commify {
 	
 	# Return the improved number
 	return $_;
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+sub set_highscoretable
+{
+	my ($self,$highscoretable,$skills) = @_;
+	
+	# Make a variable to contain the htmlcontent for the highscores
+	my $htmlcontent = "<html>
+	<body bgcolor=#222222>
+		<table width=100% bgcolor=#222222>
+			<tr>";
+		
+	# Make a counter
+	my $tables = 1;
+	
+	# Make a for loop
+	my $counter;
+	for ($counter = 0; $counter < $skills; $counter++)
+	{
+		# Append the htmlcontent
+		$htmlcontent = $htmlcontent.$highscoretable->{$skillorder[$counter]};
+		
+		# If we are on the 3rd table
+		if ($tables =~ /^3$/)
+		{
+			# Begin a new table row
+			$htmlcontent = "$htmlcontent
+			</tr>
+			<tr>";
+			
+			# Reset the table counter
+			$tables = 1;
+		}
+		# Else
+		else
+		{
+			# Increase the table counter by 1
+			$tables += 1;
+		}
+	}
+
+	# End the htmlcontent
+	$htmlcontent = $htmlcontent.$highscoretable->{$skillorder[-1]}."
+			</tr>
+		</table>
+	</body>
+</html>";
+
+	# If there are only 23 skills
+	if ($skills =~ /^23$/)
+	{
+		# Add table to the highscores07
+		$self->{highscoretable07}->SetPage($htmlcontent);
+	}
+	# Else
+	else
+	{
+		# Add table to the highscores
+		$self->{highscoretable}->SetPage($htmlcontent);
+	}
 }
 
 #
