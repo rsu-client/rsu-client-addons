@@ -59,7 +59,7 @@ eval "use Wx"; $Wx_Loaded = 0 if $@;
 ###################
 
 # Require the actual addon
-require "$cwd/ge_search";
+require "$cwd/ge_search.plx";
 
 # Every package must return true (1)
 1;
