@@ -59,7 +59,7 @@ eval "use Wx"; $Wx_Loaded = 0 if $@;
 ###################
 
 # Require the actual addon
-require "$cwd/fullscreen_emu";
+require "$cwd/fullscreen_emu.plx";
 
 # Every package must return true (1)
 1;
