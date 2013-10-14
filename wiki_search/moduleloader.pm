@@ -59,7 +59,7 @@ eval "use Wx"; $Wx_Loaded = 0 if $@;
 ###################
 
 # Require the actual addon
-require "$cwd/wiki_search";
+require "$cwd/wiki_search.plx";
 
 # Every package must return true (1)
 1;
