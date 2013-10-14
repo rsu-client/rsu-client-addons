@@ -1,6 +1,6 @@
 # The package line is the identifier for the addon
 # the package name should ALWAYS be foldername::moduleloader
-package player_lookup::moduleloader;
+package ge_search::moduleloader;
 
 # Use Cwd so we can find stuff in our own directory
 use Cwd;
@@ -59,7 +59,7 @@ eval "use Wx"; $Wx_Loaded = 0 if $@;
 ###################
 
 # Require the actual addon
-require "$cwd/player_lookup";
+require "$cwd/player_lookup.plx";
 
 # Every package must return true (1)
 1;

@@ -316,7 +316,6 @@ sub set_colors
 	$self->{highscoretable07}->SetBackgroundColour(Wx::Colour->new("#222222"));
 	$self->{highscoretable07}->SetForegroundColour(Wx::Colour->new("#222222"));
 	
-	# Make the highscore tables (lazy method atm due to lack of time, will be changed ASAP to auto generated)
 	$self->{highscoretable}->SetPage('<html>
 	<body bgcolor=#222222>
 		<table width=100% bgcolor=#222222>
