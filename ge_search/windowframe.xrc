@@ -53,16 +53,24 @@
 				<object class="sizeritem">
 					<option>1</option>
 					<flag>wxEXPAND</flag>
-					<border>5</border>
-					<object class="wxStaticBoxSizer">
+					<border>0</border>
+					<object class="wxBoxSizer">
 						<orient>wxVERTICAL</orient>
-						<label> Search results (First 20 items found)</label>
+						<object class="sizeritem">
+							<option>0</option>
+							<flag>wxALL</flag>
+							<border>5</border>
+							<object class="wxStaticText" name="lb_results">
+								<label>Search results (First 20 items found)</label>
+								<wrap>-1</wrap>
+							</object>
+						</object>
 						<object class="sizeritem">
 							<option>1</option>
-							<flag>wxEXPAND | wxALL</flag>
+							<flag>wxEXPAND</flag>
 							<border>0</border>
 							<object class="wxPanel" name="searchpanel">
-								<style>wxTAB_TRAVERSAL</style>
+								<style>wxNO_BORDER|wxTAB_TRAVERSAL</style>
 							</object>
 						</object>
 					</object>
@@ -71,17 +79,13 @@
 					<option>0</option>
 					<flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
 					<border>5</border>
-					<object class="wxStaticText" name="m_staticText2">
+					<object class="wxStaticText" name="lb_hint">
 						<style>wxALIGN_CENTRE</style>
 						<label>Double click on an item to view it on the Grand Exchange website.</label>
 						<wrap>-1</wrap>
 					</object>
 				</object>
 			</object>
-		</object>
-		<object class="wxStatusBar" name="m_statusBar1">
-			<style>wxST_SIZEGRIP</style>
-			<fields>1</fields>
 		</object>
 	</object>
 </resource>
