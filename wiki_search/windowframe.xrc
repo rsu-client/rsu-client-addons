@@ -52,11 +52,10 @@
 				</object>
 				<object class="sizeritem">
 					<option>0</option>
-					<flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+					<flag>wxALL</flag>
 					<border>5</border>
-					<object class="wxStaticText" name="m_staticText2">
-						<style>wxALIGN_CENTRE</style>
-						<label>Double click on an article name to open it in the browser.</label>
+					<object class="wxStaticText" name="lb_results">
+						<label>Wiki Articles on the Official RuneScape Wiki</label>
 						<wrap>-1</wrap>
 					</object>
 				</object>
@@ -65,31 +64,28 @@
 					<flag>wxEXPAND</flag>
 					<border>5</border>
 					<object class="wxBoxSizer">
-						<orient>wxHORIZONTAL</orient>
+						<orient>wxVERTICAL</orient>
 						<object class="sizeritem">
 							<option>1</option>
-							<flag>wxEXPAND</flag>
+							<flag>wxEXPAND | wxALL</flag>
+							<border>0</border>
+							<object class="wxPanel" name="rswikipanel">
+								<style>wxTAB_TRAVERSAL</style>
+							</object>
+						</object>
+						<object class="sizeritem">
+							<option>0</option>
+							<flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
 							<border>5</border>
-							<object class="wxStaticBoxSizer">
-								<orient>wxVERTICAL</orient>
-								<label>Wiki Articles on the Official RuneScape Wiki</label>
-								<object class="sizeritem">
-									<option>1</option>
-									<flag>wxEXPAND | wxALL</flag>
-									<border>0</border>
-									<object class="wxPanel" name="rswikipanel">
-										<style>wxTAB_TRAVERSAL</style>
-									</object>
-								</object>
+							<object class="wxStaticText" name="lb_hint">
+								<style>wxALIGN_CENTRE</style>
+								<label>Double click on an article name to open it in the browser.</label>
+								<wrap>-1</wrap>
 							</object>
 						</object>
 					</object>
 				</object>
 			</object>
-		</object>
-		<object class="wxStatusBar" name="m_statusBar1">
-			<style>wxST_SIZEGRIP</style>
-			<fields>1</fields>
 		</object>
 	</object>
 </resource>

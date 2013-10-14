@@ -148,6 +148,10 @@ sub set_layout
     $self->{search} = $self->FindWindow('search');
     $self->{rswikipanel} = $self->FindWindow('rswikipanel');
     $self->{searchfor} = $self->FindWindow('searchfor');
+    $self->{lb_results} = $self->FindWindow('lb_results');
+    $self->{lb_hint} = $self->FindWindow('lb_hint');
+    $self->{lb_search} = $self->FindWindow('lb_search');
+    $self->{mainpanel} = $self->FindWindow('mainpanel');
     
     # Create a boxsizer to contain the itemlist
     $self->{sizer} = Wx::BoxSizer->new(wxVERTICAL);
@@ -155,7 +159,6 @@ sub set_layout
     # Create the itemlist (simplehtmllistbox)
     my $choices = [  ];
     $self->{wikilist} = Wx::SimpleHtmlListBox->new($self->{rswikipanel}, -1, wxDefaultPosition, wxDefaultSize, $choices, wxHLB_DEFAULT_STYLE );
-    $self->{wikilist}->SetBackgroundColour(wxBLACK);
     
     # Add the itemlist to the sizer
     $self->{sizer}->Add($self->{wikilist}, 1, wxALL|wxEXPAND, 5);
@@ -168,12 +171,40 @@ sub set_layout
     
     # Set the icon for the window
 	$self->SetIcon(Wx::Icon->new("$cwd/bitmaps/icon.png", wxBITMAP_TYPE_PNG));
+	
+	# Set the colors for the widgets
+	set_colors($self);
     
     # Set default size
 	$self->SetSize(420,440);
 	
 	# Make sure the window cannot be resized smaller
 	$self->SetMinSize($self->GetSize);
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+sub set_colors
+{
+	# Get the passed data
+	my ($self) = @_;
+	
+	# Set the colors
+    $self->{rswikipanel}->SetBackgroundColour(Wx::Colour->new("#000000"));
+    $self->{rswikipanel}->SetForegroundColour(Wx::Colour->new("#000000"));
+    $self->{lb_search}->SetBackgroundColour(Wx::Colour->new("#000000"));
+    $self->{lb_search}->SetForegroundColour(Wx::Colour->new("#E8B13F"));
+    $self->{lb_hint}->SetBackgroundColour(Wx::Colour->new("#000000"));
+    $self->{lb_hint}->SetForegroundColour(Wx::Colour->new("#E8B13F"));
+    $self->{lb_results}->SetBackgroundColour(Wx::Colour->new("#000000"));
+    $self->{lb_results}->SetForegroundColour(Wx::Colour->new("#E8B13F"));
+    $self->{mainpanel}->SetBackgroundColour(Wx::Colour->new("#000000"));
+    $self->{mainpanel}->SetForegroundColour(Wx::Colour->new("#000000"));
+    $self->{wikilist}->SetBackgroundColour(Wx::Colour->new("#222222"));
+    $self->{wikilist}->SetForegroundColour(Wx::Colour->new("#222222"));
+    $self->{search}->SetForegroundColour(Wx::Colour->new("#000000"));
 }
 
 #
