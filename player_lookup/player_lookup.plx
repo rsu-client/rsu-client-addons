@@ -299,8 +299,8 @@ sub set_colors
 		$self->{mainpanel}->SetForegroundColour(Wx::Colour->new("#E8B13F"));
 		$self->{label_player}->SetBackgroundColour(Wx::Colour->new("#000000"));
 		$self->{label_player}->SetForegroundColour(Wx::Colour->new("#E8B13F"));
-		$self->{tabwindow}->SetBackgroundColour(Wx::Colour->new("#222222"));
-		$self->{tabwindow}->SetForegroundColour(Wx::Colour->new("#E8B13F"));
+		#$self->{tabwindow}->SetBackgroundColour(Wx::Colour->new("#222222"));
+		#$self->{tabwindow}->SetForegroundColour(Wx::Colour->new("#E8B13F"));
 	}
 	
 	$self->{tab_recentactivity}->SetBackgroundColour(Wx::Colour->new("#222222"));
