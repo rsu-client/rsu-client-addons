@@ -195,7 +195,7 @@ sub set_layout
 	$self->{txt_width} = $self->FindWindow('txt_width');
 	
 	# Set the icon for the window
-	#$self->SetIcon(Wx::Icon->new("$cwd/icon.png", wxBITMAP_TYPE_PNG));
+	$self->SetIcon(Wx::Icon->new("$cwd/bitmaps/icon.png", wxBITMAP_TYPE_PNG));
 	
 	# Load the saved config
 	loadconfig($self);
