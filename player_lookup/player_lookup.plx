@@ -36,11 +36,17 @@ my $scriptname = $FindBin::Script;
 # If the scriptname is player_lookup then
 if ($scriptname =~ /^(player_lookup|script_loader)$/)
 {
-	# Add the universal addons directory to the include path
+	# Add the addons own modules to the include path
 	unshift @INC, "$scriptdir/modules";
 	
 	# Use the scriptdir as cwd
 	$cwd = $scriptdir;
+}
+# Else if the scriptname is rsu-query-unix or rsu-query-darwin
+elsif($scriptname =~ /^(rsu-query-unix|rsu-query-darwin)$/)
+{
+	# Add the addons own modules to the include path
+	unshift @INC, "$cwd/modules";
 }
 
 # Detect the current OS
@@ -105,6 +111,12 @@ eval "use LWP::Simple";
 
 # Use an xml/rss parser for the recent player activity
 eval "use XML::RSSLite"; die "Cannot load XML::RSSLite\n" if $@;
+
+# Use the json module that lets us parse json strings
+eval "use JSON qw( decode_json )"; die "Cannot load JSON.pm\n" if $@;
+
+# Use the json module that lets us parse json strings
+eval "use HTTP::Tiny"; die "Cannot load HTTP::Tiny\n" if $@;
 
 sub new
 {
@@ -263,6 +275,9 @@ sub set_layout
 	# Get the fullavatar bitmap widget
 	$self->{fullavatar} = $self->FindWindow('fullavatar');
 	
+	# Get the playerdetails htmlwindow
+	$self->{playerdetails} = $self->FindWindow('playerdetails');
+	
 	# Set the icon for the window
 	$self->SetIcon(Wx::Icon->new("$cwd/bitmaps/default_chat.png", wxBITMAP_TYPE_PNG));
 	
@@ -302,7 +317,8 @@ sub set_colors
 		#$self->{tabwindow}->SetBackgroundColour(Wx::Colour->new("#222222"));
 		#$self->{tabwindow}->SetForegroundColour(Wx::Colour->new("#E8B13F"));
 	}
-	
+	$self->{playerdetails}->SetBackgroundColour(Wx::Colour->new("#222222"));
+	$self->{playerdetails}->SetForegroundColour(Wx::Colour->new("#E8B13F"));
 	$self->{tab_recentactivity}->SetBackgroundColour(Wx::Colour->new("#222222"));
 	$self->{tab_recentactivity}->SetForegroundColour(Wx::Colour->new("#E8B13F"));
 	$self->{tab_highscores}->SetBackgroundColour(Wx::Colour->new("#222222"));
@@ -341,7 +357,7 @@ sub set_colors
 	</body>
 </html>');
 
-$self->{highscoretable07}->SetPage('<html>
+	$self->{highscoretable07}->SetPage('<html>
 	<body bgcolor=#222222>
 		<table width=100% bgcolor=#222222>
 			<tr><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/attack.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/constitution.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/mining.png"></div></td></table></td>
@@ -361,6 +377,22 @@ $self->{highscoretable07}->SetPage('<html>
 			<tr><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/construction.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/hunter.png"></div></td></table></td><td bgcolor=#000000><table width=100%><td width=90%><font size=1 color=#E8B13F>Level: N/A<br>Rank: N/A<br>XP: N/A</font></td><td valign=top><div align=right><img src="./bitmaps/overall.png"></div></td></table></td>
 			</tr>
 		</table>
+	</body>
+</html>');
+
+	$self->{playerdetails}->SetPage('<html>
+	<body bgcolor=#222222>
+			<table width=100% bgcolor=#222222>
+					<td width=40% bgcolor=#222222>
+						<div align=right><font color=#E8B13F><b>Name:<br>
+						Title:<br>
+						Clan:<br>
+						Recruiting:</b></font></div>
+					</td>
+					<td width=60%>
+						<font color=#E8B13F></font>
+					</td>
+			</table>
 	</body>
 </html>');
 }
@@ -535,56 +567,69 @@ sub set_playerinfo
 	# Get the passed data
 	my ($self, $playerinfo) = @_;
 	
-	# Replace member:true with member:Yes
-	$playerinfo =~ s/member:true/member:Yes/;
-	# Replace member:false with member:No
-	$playerinfo =~ s/member:false/member:No/;
+	# Parse the json string using decode_json from the JSON module
+	my @playerinfo = @{decode_json( $playerinfo )};
 	
 	# If the player is in a clan
-	if ($playerinfo =~ /,clan:/)
+	if (exists $playerinfo[0]->{'clan'})
 	{
-		# Fish out the player name, title and memberstatus
-		$playerinfo =~ s/^member:(.+),title:(|.+),clan:.+,name:(.+),recruiting:.+,world.*/Name: $3\nTitle: $2\nMember: $1/g;
+		# Make a variable to contain a more "human" status for recruiting
+		my $recruiting = "No";
+		
+		# If clan is recruiting
+		if ($playerinfo[0]->{'recruiting'} eq '1')
+		{
+			# Set recruiting to Yes
+			$recruiting = "Yes";
+		}
+		
+		
+		# Set the playerdetails
+		$self->{playerdetails}->SetPage('<html>
+	<body bgcolor=#222222>
+			<table width=100% bgcolor=#222222>
+					<td width=40% bgcolor=#222222>
+						<div align=right><font color=#E8B13F><b>Name:<br>
+						Title:<br>
+						Clan:<br>
+						Recruiting:</b></font></div>
+					</td>
+					<td width=60%>
+						<div align=left><font color=#E8B13F>'.$playerinfo[0]->{'name'}.'<br>
+						'.$playerinfo[0]->{'title'}.'<br>
+						'.$playerinfo[0]->{'clan'}.'<br>
+						'.$recruiting.'</font></div>
+					</td>
+			</table>
+	</body>
+</html>');
 	}
 	# Else player is not in a clan
 	else
 	{
-		# Fish out the player name, title and memberstatus
-		$playerinfo =~ s/^member:(.+),title:(|.+),name:(.+),world.*/Name: $3\nTitle: $2\nMember: $1/g;
+		# Set the playerdetails
+		$self->{playerdetails}->SetPage('<html>
+	<body bgcolor=#222222>
+			<table width=100% bgcolor=#222222>
+					<td width=40% bgcolor=#222222>
+						<div align=right><font color=#E8B13F><b>Name:<br>
+						Title:<br>
+						Clan:<br>
+						Recruiting:</b></font></div>
+					</td>
+					<td width=60%>
+						<div align=left><font color=#E8B13F>'.$playerinfo[0]->{'name'}.'<br>
+						'.$playerinfo[0]->{'title'}.'<br>
+						<br>
+						</font></div>
+					</td>
+			</table>
+	</body>
+</html>');
 	}
 	
 	# Add the info to the window
-	$self->{playerinfo}->SetLabel($playerinfo);
-}
-
-#
-#---------------------------------------- *** ----------------------------------------
-#
-
-sub set_claninfo
-{
-	# Fetch the passed data
-	my ($self, $claninfo) = @_;
-	
-	# If the player is in a clan
-	if ($claninfo =~ /,clan:/)
-	{
-		# Fish out the clan name (if any) and prepare it for the label
-		$claninfo =~ s/^.+,clan:(.+),n.+,recruiting:(true|false),w.+/Clan:  $1\nRecruiting: $2/g;
-		
-		# Replace true with Yes and false with No
-		$claninfo =~ s/Recruiting: true/This clan is currently\nrecruiting people!/;
-		$claninfo =~ s/Recruiting: false/This clan is currently\nNOT recruiting people./;
-	}
-	# Else
-	else
-	{
-		# Set Clan and Recruiting to empty
-		$claninfo = "Clan: ";
-	}
-	
-	# Add the clanstatus into the window
-	$self->{claninfo}->SetLabel($claninfo);
+	#$self->{playerinfo}->SetLabel($playerinfo);
 }
 
 #
@@ -665,17 +710,13 @@ sub set_playerbio
 	my ($self, $player) = @_;
 	
 	# Fetch the player details
-	#my $jquerystring = readurl('http://services.runescape.com/m=website-data/g=runescape/playerDetails.ws?names=["'.$player.'"]&callback=jQuery000000000000000_0000000000');
+	my $jquerystring = readurl('http://services.runescape.com/m=website-data/g=runescape/playerDetails.ws?names=["'.$player.'"]&callback=jQuery000000000000000_0000000000');
 	
 	# Remove unneeded parts of the output
-	#$jquerystring =~ s/(jQuery000000000000000_0000000000\(\[\{|"|\}\]\);)//g;
+	$jquerystring =~ s/.+\((.+)\);/$1/;
 	
-	# Disabled until a player bio solution is found
-	# Parse and set the player claninfo
-	#set_claninfo($self, $jquerystring);
-	
-	# Parse and set the playerbio info
-	#set_playerinfo($self, $jquerystring);
+	# Parse and set the playerdetails
+	set_playerinfo($self, $jquerystring);
 	
 	# Parse the players recent activity and display it on the window
 	set_recent_activity($self,$player)
@@ -952,8 +993,31 @@ sub set_highscoretable
 #---------------------------------------- *** ----------------------------------------
 #
 
-# Replica of updater::download::sysdload::get
 sub readurl
+{
+	# Get the passed data
+	my ($url, $max_time) = @_;
+	
+	# Set the timeout in seconds
+	my $timeout = 10;
+	$timeout = $max_time if defined $max_time;
+	
+	# Make a new http object
+	my $http = HTTP::Tiny->new(timeout => $timeout);
+	
+	# Make a variable to contain the http response
+	my $response = $http->get($url);
+	
+	# Return the content
+	return $response->{content};
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+# Replica of updater::download::sysdload::get
+sub readurl_old
 {
 	# Get the passed data
 	my ($url, $timeout) = @_;
