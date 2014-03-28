@@ -24,7 +24,7 @@ sub search
 	my $ge_search = updater::download::sysdload::readurl("http://services.runescape.com/m=itemdb_rs/results.ws?query=$item",10);
 	
 	# Locate all item results
-	my @ge_query = rsu::files::grep::strgrep($ge_search, "(id=(\\d{1,9})\" alt=\"|td class=\"price\"|members-icon.png\"|free-icon.png\"|class=\"negative\"|class=\"positive\"|class=\"neutral\")");
+	my @ge_query = rsu::files::grep::strgrep($ge_search, "(id=(\\d{1,9})\" alt=\"|<a href=\"(.+)obj=(.+)\">(.+)<\/a>|<td class=\"memberItem\">.+<\/td>|<td class=\"\"><\/td>|<td class=\"(neutral|positive|negative)\"><a href=\"(.+)obj=(.+)\">(.+)<\/a><\/td>)");
     
     # Make an array to contain the result data
     my @result_data;
@@ -65,13 +65,24 @@ sub parse
     $item =~ s/<img src=\".+\?id=(\d{1,9})\" alt=\"(.+)\">/$1;$2/;
     
     # Get the type of item
-    $type =~ s/<img src=\".+alt=\"(Free|Members).+\".+/$1/;
+    # If the item is a members item
+    if ($type =~ /<td class=\"memberItem\">.+/)
+	{
+		# Set type to Members
+		$type = "Members";
+	}
+	# Else
+	else
+	{
+		# Set type to Free
+		$type = "Free";
+	}
     
     # Get the price of the item
-    $price =~ s/<td class=\"price\">(.+)<\/td>/$1/;
+    $price =~ s/<td><a href=\"(.+)obj=(.+)\">(.+)<\/a><\/td>/$3/;
     
     # Get the items current trend
-    $trend =~ s/<td class=\".+\">(.+)<\/td>/$1/;
+    $trend =~ s/<td class=\"(neutral|positive|negative)\"><a href=\"(.+)obj=(.+)\">(.+)<\/a><\/td>/$4/;
     
     # Return the parsed info
     return "$item;$type;$price;$trend";
