@@ -644,6 +644,10 @@ sub set_recent_activity
 	# Fetch the recent activity rss feed
 	my $rssfeed = readurl("http://services.runescape.com/m=adventurers-log/rssfeed?searchName=$player");
 	
+	# Make a variable to contain the players activity
+	my $activity = "<html>
+	<body bgcolor=\"#222222\">";
+	
 	# If the adventurer log was not found
 	if ($rssfeed !~ /404 - Page not found/)
 	{
@@ -652,10 +656,6 @@ sub set_recent_activity
 		
 		# Parse the RSSfeed
 		parseRSS(\%recent_activity, \$rssfeed);
-		
-		# Make a variable to contain the players activity
-		my $activity = "<html>
-		<body bgcolor=\"#222222\">";
 		
 		# For each value in the array
 		foreach my $item (@{$recent_activity{'item'}})
@@ -683,19 +683,39 @@ sub set_recent_activity
 		<hr>";
 		}
 	
-		# Add the closing tags to the activity list
-		$activity = "$activity
-	</body>
-</html>";
-	
 		# Fix some stuff in the finished activity list
 		#$activity =~ s/(&#8217;|&APOS;)/'/gi;
 		#$activity =~ s/(&#8211;)/-/gi;
 		#$activity =~ s/(&#13;|&#10;|&#9;)//gi;
-		
-		# Add the recent activity to the window
-		$self->{recentactivity}->SetPage($activity);
 	}
+	# Else
+	else
+	{
+		# Append the recent activity to the string
+		$activity = "$activity
+		<table width=100%>
+			<td>
+				<b>
+					<font color=#E8B13F size=3>Adventurer's Log not found</font>
+				</b>
+			</td>
+		</table>
+		<table width=100%>
+			<td>
+				<font color=#B8B8B8 size=2>$player is either Free to Play or have set their Adventurer's Log to private</font>
+			</td>
+		</table>
+		<hr>";
+	}
+	
+	
+	# Add the closing tags to the activity list
+	$activity = "$activity
+	</body>
+</html>";
+		
+	# Add the recent activity to the window
+	$self->{recentactivity}->SetPage($activity);
 }
 
 #
