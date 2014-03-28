@@ -644,27 +644,30 @@ sub set_recent_activity
 	# Fetch the recent activity rss feed
 	my $rssfeed = readurl("http://services.runescape.com/m=adventurers-log/rssfeed?searchName=$player");
 	
-	# Make a hash reference for the RSSLite parser
-	my %recent_activity;
-	
-	# Parse the RSSfeed
-	parseRSS(\%recent_activity, \$rssfeed);
-	
-	# Make a variable to contain the players activity
-	my $activity = "<html>
-	<body bgcolor=\"#222222\">";
-	
-	# For each value in the array
-	foreach my $item (@{$recent_activity{'item'}})
+	# If the adventurer log was not found
+	if ($rssfeed !~ /404 - Page not found/)
 	{
-		# Get the published date so we can remove the unused time
-		my $pubDate = "$item->{'pubDate'}";
+		# Make a hash reference for the RSSLite parser
+		my %recent_activity;
 		
-		# Remove the timestamp because it is always 00:00:00 GMT
-		$pubDate =~ s/\s+\d{2,2}:\d{2,2}:\d{2,2}\s+GMT//g;
+		# Parse the RSSfeed
+		parseRSS(\%recent_activity, \$rssfeed);
 		
-		# Append the recent activity to the string
-		$activity = "$activity
+		# Make a variable to contain the players activity
+		my $activity = "<html>
+		<body bgcolor=\"#222222\">";
+		
+		# For each value in the array
+		foreach my $item (@{$recent_activity{'item'}})
+		{
+			# Get the published date so we can remove the unused time
+			my $pubDate = "$item->{'pubDate'}";
+			
+			# Remove the timestamp because it is always 00:00:00 GMT
+			$pubDate =~ s/\s+\d{2,2}:\d{2,2}:\d{2,2}\s+GMT//g;
+			
+			# Append the recent activity to the string
+			$activity = "$activity
 		<table width=100%>
 			<td>
 				<b>
@@ -678,26 +681,21 @@ sub set_recent_activity
 			</td>
 		</table>
 		<hr>";
-	}
+		}
 	
-	# Add the closing tags to the activity list
-	$activity = "$activity
+		# Add the closing tags to the activity list
+		$activity = "$activity
 	</body>
 </html>";
 	
-	# Fix some stuff in the finished activity list
-	#$activity =~ s/(&#8217;|&APOS;)/'/gi;
-	#$activity =~ s/(&#8211;)/-/gi;
-	#$activity =~ s/(&#13;|&#10;|&#9;)//gi;
-	
-	# Add the recent activity to the window
-	$self->{recentactivity}->SetPage($activity);
-	
-	# Make the label wrap
-	#$self->{recentactivity}->Wrap(400);
-	
-	# Make it scrollable
-	#setScrollBars($self->{recentactivity_panel});
+		# Fix some stuff in the finished activity list
+		#$activity =~ s/(&#8217;|&APOS;)/'/gi;
+		#$activity =~ s/(&#8211;)/-/gi;
+		#$activity =~ s/(&#13;|&#10;|&#9;)//gi;
+		
+		# Add the recent activity to the window
+		$self->{recentactivity}->SetPage($activity);
+	}
 }
 
 #
@@ -758,22 +756,17 @@ sub fetchstats
 	no warnings;
 	
 	# If $highscore is empty
-	if ($highscore eq '')
+	if ($highscore =~ /404 - Page not found/)
 	{
 		# Tell in console that we found nothing
-		print "Player do not exist or is F2P account\n\n";
+		print "Player does not exist on the RuneScape highscores\n\n";
 		
 		# Set highscore to null
 		$highscore = '0';
-		
-		# Fetch the players display pictures and load them into the window
-		set_avatar($self, "default_avatar");
 	}
-	else
-	{
-		# Fetch the players display pictures and load them into the window
-		set_avatar($self, $player);
-	}
+	
+	# Fetch the players display pictures and load them into the window
+	set_avatar($self, $player);
 
 	# Enable warnings again
 	use warnings;
@@ -782,7 +775,7 @@ sub fetchstats
 	my $highscoretable = {};
 
 	# If fetching highscore data was successful
-	if ($highscore !~ /^0$/)
+	if ($highscore !~ /^0$/ && $highscore !~ /404 - Page not found/)
 	{
 		# Split the data by whitespace
 		my @playerdata = split /\s/, $highscore;
@@ -847,10 +840,10 @@ sub fetchstats07
 	no warnings;
 	
 	# If $highscore is empty
-	if ($highscore eq '')
+	if ($highscore =~ /404 - Page not found/)
 	{
 		# Tell in console that we found nothing
-		print "Player do not exist or is F2P account\n\n";
+		print "Player does not exist on the OldSchool highscores\n\n";
 		
 		# Set highscore to null
 		$highscore = '0';
