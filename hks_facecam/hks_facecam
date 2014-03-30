@@ -1,0 +1,392 @@
+#!/usr/bin/perl -w
+
+# Be strict to avoid messy code
+use strict;
+
+# Use FindBin module to get script directory
+use FindBin;
+
+# Name of our xrc gui resource file
+my $xrc_gui_file = "mainwindow.xrc";
+
+# Disable buffering
+$|=1;
+
+# Get script directory
+my $cwd = $FindBin::RealBin;
+# Get script filename
+my $scriptname = $FindBin::Script;
+# Detect the current OS
+my $OS = "$^O";
+
+# Make a variable for users homedir
+my $HOME;
+# If we are on windows
+if ($OS =~ /MSWin32/)
+{
+	# Get the environment variable for USERPROFILE
+	$HOME = $ENV{"USERPROFILE"};
+	# Replace all / with \
+	$HOME =~ s/\//\\/g;
+}
+# Else we are on UNIX
+else
+{
+	$HOME = $ENV{"HOME"};
+}
+
+#---------------------------------------- *** ----------------------------------------
+#---------------------------------------- *** ----------------------------------------
+#---------------------------------------- *** ----------------------------------------
+
+package wxTopLevelFrame;
+
+use Wx qw[:everything];
+use Wx::XRC;
+# Which events shall we include
+use Wx::Event qw(EVT_BUTTON);
+
+use base qw(Wx::Frame);
+
+sub new
+{
+	# Create a class
+	my $class = shift;
+	
+	# Assign class object to $self
+	my $self = $class->SUPER::new;
+	
+	# Initialize everything
+	$self->initialize;
+	
+	return $self;
+}
+
+sub initialize
+{
+	# Get pointers
+	my $self = shift;
+	
+	# Create mutators for widgets (enter the objectname for every object here)
+	$self->create_mutator
+	(
+		qw
+		(
+			xrc_resource
+		)
+	);
+	
+	load_xrc_gui($self);
+	
+	set_events($self);
+	
+	set_tooltips($self);
+	
+}
+
+sub load_xrc_gui
+{
+	# Get the pointers
+	my $self = shift;
+	
+	# Get the xrc file
+	my $xrc_file = "$cwd/$xrc_gui_file";
+	
+	# Initialize WX
+	Wx::InitAllImageHandlers();
+	
+	# Create xrc/xml resource
+	$self->xrc_resource = Wx::XmlResource->new;
+	# Initialize handlers
+	$self->xrc_resource->InitAllHandlers;
+	# Load the xrc file
+	$self->xrc_resource->Load($xrc_file);
+	
+	# Tell what window/frame to load
+	$self->xrc_resource->LoadFrame($self,undef,"mainwindow");
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+sub set_events
+{
+	# Get the pointers
+	my $self = shift;
+	
+	Wx::MessageBox("This program makes a facecam that gets hidden when
+you move the cursor over a certain region and then restores
+it when the cursor leaves that region.
+Make sure you have the following applications installed!
+	
+	* xdotool
+	* xwininfo
+	* mplayer
+	* transset (optional)", "Dependencies", wxOK);
+	
+	# Setup the events
+	# EVT_BUTTON($self, Wx::XmlResource::GetXRCID('objectname'), \&function);
+	EVT_BUTTON($self, Wx::XmlResource::GetXRCID('btn_getWINid'), \&getWINid);
+	EVT_BUTTON($self, Wx::XmlResource::GetXRCID('btn_setPos'), \&setPos);
+	EVT_BUTTON($self, Wx::XmlResource::GetXRCID('btn_startCam'), \&startCam);
+	EVT_BUTTON($self, Wx::XmlResource::GetXRCID('btn_stopCam'), \&stopCam);
+	EVT_BUTTON($self, Wx::XmlResource::GetXRCID('btn_startScript'), \&startDaemon);
+	EVT_BUTTON($self, Wx::XmlResource::GetXRCID('btn_stopScript'), \&stopDaemon);
+	
+	# Find the widgets
+	# $self->objectname = $self->FindWindow('objectname');
+	$self->{WINid} = $self->FindWindow('WINid');
+	$self->{cam} = $self->FindWindow('cam');
+	$self->{chk_framedrop} = $self->FindWindow('chk_frameDrop');
+	$self->{chk_border} = $self->FindWindow('chk_border');
+	$self->{cam_width} = $self->FindWindow('cam_width');
+	$self->{cam_height} = $self->FindWindow('cam_height');
+	$self->{x_pos} = $self->FindWindow('x_pos');
+	$self->{y_pos} = $self->FindWindow('y_pos');
+	$self->{trans} = $self->FindWindow('trans');
+	
+	# Set the icon for the window
+	$self->SetIcon(Wx::Icon->new("$cwd/bitmaps/icon.png", wxBITMAP_TYPE_PNG));
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+
+
+# Create mutator function from "Programming Perl"
+sub create_mutator
+{
+
+	my $self = shift;
+
+	# From "Programming Perl" 3rd Ed. p338.
+	for my $attribute (@_)
+	{
+
+		no strict "refs"; # So symbolic ref to typeglob works.
+		no warnings;      # Suppress "subroutine redefined" warning.
+
+		*$attribute = sub : lvalue
+		{
+
+			my $self = shift;
+
+			$self->{$attribute} = shift if @_;
+			$self->{$attribute};
+
+		};
+
+	}
+
+}
+
+
+### Events
+
+sub close_clicked
+{
+	# Get pointers
+	my ($self, $event) = @_;
+	
+	# Close window
+	$self->Destroy();
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+sub stopDaemon
+{
+	# Get the passed data
+	my ($self, $event) = @_;
+	
+	# Stop the camera region daemon
+	system "killall -9 init_camregion &";
+	
+	# Tell user daemon is now stopped
+	Wx::MessageBox("The camregion daemon is now stopped", "Daemon stopped", wxOK);
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+sub startDaemon
+{
+	# Get the passed data
+	my ($self, $event) = @_;
+	
+	# Get the background window ID
+	my $bg_window = $self->{WINid}->GetValue();
+	
+	# Start the camera region daemon
+	system "$cwd/scripts/init_camregion $bg_window &";
+	
+	# Tell user daemon is now started
+	Wx::MessageBox("The camregion daemon is now running.
+it will now track the facecam location
+and hide it whenever the cursor moves over it
+and show it whenever the cursor leaves the webcam region", "Daemon started", wxOK);
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+sub setPos
+{
+	# Get the passed data
+	my ($self, $event) = @_;
+	
+	# Get the mplayer window id
+	my $mplayer = `xdotool search MPlayer 2>/dev/null`;
+	
+	# Remove the newlines
+	$mplayer =~ s/\n//g;
+	
+	# Get the settings
+	my $cam_w = $self->{cam_width}->GetValue();
+	my $cam_h = $self->{cam_height}->GetValue();
+	my $cam_x = $self->{x_pos}->GetValue();
+	my $cam_y = $self->{y_pos}->GetValue();
+	my $trans = $self->{trans}->GetValue();
+	
+	# Resize the webcam feed
+	system "xdotool windowsize $mplayer $cam_w $cam_h &";
+	
+	# Move the webcam feed
+	system "xdotool windowmove $mplayer $cam_x $cam_y &";
+	
+	# Change the transparency
+	system "$cwd/scripts/init_transparency $trans &";
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+sub stopCam
+{
+	# Get the passed data
+	my ($self, $event) = @_;
+	
+	# Get the mplayer window id
+	my $mplayer = `xdotool search MPlayer 2>/dev/null`;
+	
+	# Remove the newlines
+	$mplayer =~ s/\n//g;
+	
+	# Close the webcam
+	system "xdotool windowkill $mplayer &";
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+sub startCam
+{
+	# Get the passed data
+	my ($self, $event) = @_;
+	
+	# Get the settings
+	my $device = $self->{cam}->GetValue();
+	my $border = $self->{chk_border}->GetValue();
+	my $framedrop = $self->{chk_framedrop}->GetValue();
+	my $cam_w = $self->{cam_width}->GetValue();
+	my $cam_h = $self->{cam_height}->GetValue();
+	
+	# Prepare a command
+	my $mplayer = "mplayer -tv driver=v4l2:device=/dev/video$device tv:// -ontop -x 268 -y 274";
+	
+	# If framedrop is enabled
+	if ($framedrop =~ /1/)
+	{
+		# Apply the framedrop parameter
+		$mplayer = "$mplayer -framedrop";
+	}
+	
+	# If the no border option is enabled
+	if ($border =~ /1/)
+	{
+		# Apply the noborder parameter
+		$mplayer = "$mplayer -noborder";
+	}
+	
+	# Execute the mplayer command
+	system "$mplayer &";
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+sub getWINid
+{
+	# Get the passed data
+	my ($self, $event) = @_;
+	
+	# Use xdotool to get the window id by letting the user select it
+	my $id = `xdotool selectwindow`;
+	
+	# If the ID is not empty
+	if ($id !~ /^$/)
+	{
+		# Remove the newlines
+		$id =~ s/\n//g;
+		
+		# Add the window id to the textbox
+		$self->{WINid}->SetValue($id);
+	}
+	
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+sub set_tooltips
+{
+	my ($self) = @_;
+		
+	# Set tooltips with info about the settings
+	# $self->objectname->SetToolTip("message");
+	
+}
+
+#---------------------------------------- *** ----------------------------------------
+#---------------------------------------- *** ----------------------------------------
+#---------------------------------------- *** ----------------------------------------
+
+package application;
+use base qw(Wx::App);
+
+sub OnInit
+{
+	# Get pointers
+	my $self = shift;
+	
+	# Create mainwindow(new window)
+	my $mainwindow = wxTopLevelFrame->new(undef, -1);
+	
+	# Set mainwindo/topwindow
+	$self->SetTopWindow($mainwindow);
+	
+	# Show the window
+	$mainwindow->Show(1);
+}
+
+#---------------------------------------- *** ----------------------------------------
+#---------------------------------------- *** ----------------------------------------
+#---------------------------------------- *** ----------------------------------------
+
+
+package main;
+
+my $app = application->new;
+$app->MainLoop;
+

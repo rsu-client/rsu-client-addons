@@ -1,0 +1,47 @@
+#!/usr/bin/perl -w
+
+# Be strict to avoid messy code
+use strict;
+
+# Use FindBin module to get script directory
+use FindBin;
+
+# Get script directory
+my $cwd = $FindBin::RealBin;
+# Get script filename
+my $scriptname = $FindBin::Script;
+# Detect the current OS
+my $OS = "$^O";
+	
+# run the script
+main();
+
+sub main
+{
+	# If transparency not 0
+	if ($ARGV[0] !~ /^0$/)
+	{
+		# Get the window id for the webcam "overlay"
+		my $webcam = `xdotool search MPlayer`;
+		
+		# Calculate the transparency setting
+		my $transparency = 100-$ARGV[0];
+		
+		# Set the transparency
+		system "transset -x 0.$transparency -m 0.$transparency --id $webcam";
+	}
+	else
+	{
+		# Get the window id for the webcam "overlay"
+		my $webcam = `xdotool search MPlayer`;
+		
+		# Set the transparency
+		system "transset -x 1 -m 1 --id $webcam";
+	}
+	
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+

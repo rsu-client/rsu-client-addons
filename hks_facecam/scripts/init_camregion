@@ -1,0 +1,97 @@
+#!/usr/bin/perl -w
+
+# Be strict to avoid messy code
+use strict;
+
+# Use FindBin module to get script directory
+use FindBin;
+
+# Disable buffering
+$|=1;
+
+# Get script directory
+my $cwd = $FindBin::RealBin;
+# Get script filename
+my $scriptname = $FindBin::Script;
+# Detect the current OS
+my $OS = "$^O";
+
+# run the script
+main();
+
+# Arguments
+# $ARGV[0] = background window ID
+
+sub main
+{
+	# Make a loop so this can become a daemon
+	while (1)
+	{
+		# Get the window id for the webcam "overlay"
+		my $webcam = `xdotool search MPlayer 2>/dev/null`;
+		
+		# Get the geometry for the mplayer
+		my $facecamregion = `xdotool getwindowgeometry $webcam`;
+	
+		# Get the coordinates and size of the webcam display
+		my @region = split /\n/, $facecamregion;
+	
+		# Get the size of the webcam feed
+		my $size = $region[2];
+		$size =~ s/\s+.*(\d{3,4}x\d{3,4})/$1/g;
+		my @camsize = split /x/, $size;
+		# $camsize[0] = width
+		# $camsize[1] = height
+	
+		# Get the position of the webcam feed
+		my $pos = $region[1];
+		$pos =~ s/\s+Position:\s?(\d{1,4},\d{1,4})\s+.*/$1/g;
+		my @campos = split /,/, $pos;
+		# $campos[0] = x position
+		# $campos[1] = y position
+	
+		# Get the location of the cursor
+		my $mouse = `xdotool getmouselocation --shell`;
+		$mouse =~ s/X=(\d{1,4})\nY=(\d{1,4})\n.+\n.+\n/$1x$2/g;
+		my @mousecoord = split /x/, $mouse;
+
+		# Create the region borders
+		my $region_bottom = $camsize[1] + $campos[1];
+		my $region_right = $campos[0] + $camsize[0];
+		
+		# If the cursor hits the region
+		if (($mousecoord[0] > $campos[0] && $mousecoord[1] < $region_bottom) && ($mousecoord[0] < $region_right)  && ($mousecoord[0] > $campos[0] && $mousecoord[1] > $campos[1]))
+		{
+			# Tell that we detected the region
+			print "Detected cursor within facecam region!
+Coordinates:$mousecoord[0]x$mousecoord[1]
+ACTION: Hide Facecam til cursor leaves region!\n\n";
+			
+			# Hide the facecam
+			system "xdotool windowminimize $webcam";
+		}
+		else
+		{
+			# Get the info about the facecam
+			my $wininfo = `xwininfo -id $webcam`;
+			
+			# Restore if facecam is unmapped
+			if ($wininfo =~ /Map State: IsUnMapped/)
+			{
+				# Show the facecam
+				system "xdotool windowactivate $webcam";
+				
+				# Give focus to the background window
+				system "xdotool windowactivate $ARGV[0]";
+			}
+			
+		}	
+	}
+	
+}
+
+#
+#---------------------------------------- *** ----------------------------------------
+#
+
+ 
