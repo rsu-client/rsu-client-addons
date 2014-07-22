@@ -649,7 +649,7 @@ sub set_recent_activity
 	<body bgcolor=\"#222222\">";
 	
 	# If the adventurer log was not found
-	if ($rssfeed !~ /404 - Page not found/)
+	if ($rssfeed !~ /404 - Page not found/ && $rssfeed !~ /^<(!doctype |)html>/)
 	{
 		# Make a hash reference for the RSSLite parser
 		my %recent_activity;
